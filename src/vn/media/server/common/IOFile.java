@@ -31,7 +31,7 @@ public class IOFile {
 			pw.println(sp.indexOfBook);
 			pw.println(sp.indexOfMovies);
 			pw.println(sp.indexOfMusic);
-	
+			pw.println(sp.indexOfBill);
 			
 			pw.close();
 		} catch (IOException e) {
@@ -50,7 +50,7 @@ public class IOFile {
 			sp.indexOfBook = Integer.parseInt(inp.nextLine());
 			sp.indexOfMovies = Integer.parseInt(inp.nextLine());
 			sp.indexOfMusic = Integer.parseInt(inp.nextLine());
-			
+			sp.indexOfBill = Integer.parseInt(inp.nextLine());
 			inp.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Failed to open file to read");

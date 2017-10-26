@@ -96,6 +96,8 @@ public class ClickTableClient {
 				// TODO Auto-generated method stub
 				if(tfSoLuong.getText().length()>0) {
 					showTotal();
+				}else {
+					tfTienChoSP.setText("0 đ");
 				}
 			}
 			
@@ -111,9 +113,10 @@ public class ClickTableClient {
 				showTotal();
 			}
 			
+			
 			public void showTotal() {
 				long dongia = Long.parseLong(convert(tfDonGia.getText()));
-				long soluong = Integer.parseInt(tfSoLuong.getText());
+				int soluong = Integer.parseInt(tfSoLuong.getText());
 				
 				
 				DecimalFormat format = (DecimalFormat) DecimalFormat.getCurrencyInstance(new Locale("vi","VN"));

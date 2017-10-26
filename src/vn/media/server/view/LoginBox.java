@@ -16,11 +16,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import vn.media.client.controller.AddProductClient;
 import vn.media.client.controller.ChangeTableClient;
 import vn.media.client.controller.ClickTableClient;
 import vn.media.client.controller.SearchBookClient;
 import vn.media.client.controller.SearchMovieClient;
 import vn.media.client.controller.SearchMusicClient;
+import vn.media.client.controller.SeeCartController;
 import vn.media.client.view.ClientUI;
 import vn.media.server.common.IOFile;
 import vn.media.server.controller.ChangeTableController;
@@ -142,9 +144,9 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 		String username = tfUsername.getText().trim();
 		String password = tfPassword.getText().trim();
 		
-		if(db.checkAccLogin(username)==true){
+		if(db.checkAccLogin(username,password)==true){
 			dispose();
-			System.out.println("Type    "+db.checkTypeAcc(username).equals("khachhang"));
+		
 			
 			
 			if(db.checkTypeAcc(username).equals("quanly")){
@@ -266,6 +268,8 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchMovieClient(clientUI, db);
 				new SearchMusicClient(clientUI, db);
 				new ClickTableClient(clientUI, db);
+				new AddProductClient(clientUI, db);
+				new SeeCartController(clientUI, db);
 			}
 			
 		}

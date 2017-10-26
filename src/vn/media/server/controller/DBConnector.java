@@ -42,13 +42,16 @@ public class DBConnector {
 	
 	
 	// return true if password is correct with username
-	public boolean checkAccLogin(String username) {
+	public boolean checkAccLogin(String username,String pass) {
 		conn = getConnection();
 		try {
 			rs = stm.executeQuery("SELECT pass FROM account WHERE username='" + username + "';");
-			System.out.println("Check account ");
-			while (rs.next()) {
-				if (username.equals(rs.getString("pass"))) {
+		
+			if (rs.next()) {
+			
+				
+				
+				if (pass.equals(rs.getString("pass"))) {
 					System.out.println("Check account login");
 					conn.close();
 					return true;
@@ -65,6 +68,58 @@ public class DBConnector {
 		return false;
 	}
 
+	public boolean checkSerial(String serial) {
+		conn =getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT status FROM card WHERE serial = '"+serial+"';");
+			if(rs.next()) {
+				if(rs.getInt(1)==1) {
+					return true;
+				}
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public long getValueCard(String serial) {
+		conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT value FROM card WHERE serial = '"+serial+"';");
+			if(rs.next()) {
+				return rs.getLong(1);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public void updateStatusCard(String serial) {
+		conn = getConnection();
+		
+		try {
+			int r = stm.executeUpdate("UPDATE card SET status ="+0+" WHERE serial = '"+serial+"';");
+			
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+	
+	
+	
+	
+	
 	
 	// return type of account is quanly,nhanvien or khachhang
 	public String checkTypeAcc(String username) {
@@ -465,6 +520,70 @@ public class DBConnector {
 	}
 	
 	
+	public void updateCoin(String username,long coin) {
+		conn = getConnection();
+		
+		try {
+			int r = stm.executeUpdate("UPDATE khachhang SET coin = "+coin+" WHERE username = '"+username+"';");
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void editCustomer(String id, String hoTen, Timestamp date, String diaChi, String sDT, long coin, String username,
+			String password) {
+		conn = getConnection();
+		try {
+			int kq2 = stm
+					.executeUpdate("UPDATE account SET pass='"+password+"' WHERE username = '"+username+"' ;");
+			int kq = stm.executeUpdate("UPDATE khachhang SET hoten = '"+hoTen+"', ngaysinh='"+date+"',"
+					+ " diachi = '"+diaChi+"', sdt = '"+sDT+"', coin = "+coin+" WHERE username = '"+username+"' ;");
+
+			if (kq > 0 && kq2 > 0) {
+				System.out.println("edit cus to table khachhang and table account");
+				
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed to add customer");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public KhachHang getCus(String username) {
+		conn = getConnection();
+	
+		try {
+			
+
+			rs = stm.executeQuery(
+					"SELECT khachhang.*,pass FROM khachhang,account WHERE khachhang.username=account.username and khachhang.username='"+username+"';");
+			if(rs.next()) {
+
+				String id = rs.getString("id");
+				String hoten = rs.getString("hoten");
+				Timestamp ngaysinh = rs.getTimestamp("ngaysinh");
+				String diachi = rs.getString("diachi");
+				String sdt = rs.getString("sdt");
+				long luong = rs.getLong("coin");
+				String password = rs.getString("pass");
+				KhachHang nv = new KhachHang(id, hoten, ngaysinh, diachi, sdt, luong, username, password);
+				return nv;
+			}
+			conn.close();
+			return null;
+		} catch (SQLException e) {
+			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+
+		}
+	}
 	
 	
 	
@@ -1047,7 +1166,22 @@ public class DBConnector {
 		
 	}
 	
-	
+	public int getSoLuongTonKho(String id) {
+		conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT soluongtonkho FROM sanpham WHERE id='"+id+"';");
+			if(rs.next()) {
+				conn.close();
+				return rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	
 	
 	

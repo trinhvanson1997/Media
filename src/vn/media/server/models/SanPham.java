@@ -8,6 +8,7 @@ public class SanPham {
 	public static int indexOfBook;
 	public static int indexOfMovies;
 	public static int indexOfMusic;
+	public static int indexOfBill;
 	
 	protected String id;
 	protected String tenSP;

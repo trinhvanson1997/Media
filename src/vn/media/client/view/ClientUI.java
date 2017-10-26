@@ -1,19 +1,27 @@
 package vn.media.client.view;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import vn.media.server.common.IOFile;
 import vn.media.server.controller.DBConnector;
 import vn.media.server.models.DiaNhac;
 import vn.media.server.models.DiaPhim;
+import vn.media.server.models.KhachHang;
+import vn.media.server.models.MuaHang;
 import vn.media.server.models.Sach;
+import vn.media.server.view.LoginBox;
 import vn.media.server.view.TabbedProduct;
 import vn.media.server.view.book.TableBookPanel;
 import vn.media.server.view.movies.TableMoviesPanel;
@@ -21,7 +29,7 @@ import vn.media.server.view.music.TableMusicPanel;
 
 public class ClientUI extends JFrame{
 	private DBConnector db;
-	
+	private List<MuaHang> listMH;
 	
 	private JPanel topPanel;
 	private JPanel tablePanel;
@@ -39,6 +47,7 @@ public class ClientUI extends JFrame{
 	private String username;
 	private long coin;
 	
+	IOFile ioFile = new IOFile();
 	
 	public ClientUI(String username,DBConnector db) {
 		this.db =db;
@@ -52,7 +61,7 @@ public class ClientUI extends JFrame{
 		setTitle("MediaOne (Client)");
 		
 		funcClientPanel = new FuncClientPanel();
-		
+		listMH = new ArrayList<>();
 		
 		
 		
@@ -62,6 +71,9 @@ public class ClientUI extends JFrame{
 		
 		
 		initTable();
+		initButtonInfo();
+		initButtonLogout();
+		initNapTien();
 		
 		setVisible(true);
 	}
@@ -117,10 +129,73 @@ public class ClientUI extends JFrame{
 		tableMusicPanel.updateTableClient(l3);
 	}
 	
+	private void initButtonInfo() {
+		funcClientPanel.getBtnThongTin().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				KhachHang kh = db.getCus(username);
+				new EditCusView(db, kh);
+			}
+		});
+	}
 	
+	private void initButtonLogout() {
+		funcClientPanel.getBtnDangXuat().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int click =JOptionPane.showConfirmDialog(null, "Bạn thực sự muốn đăng xuất?", "Thông báo", JOptionPane.YES_NO_OPTION);
+				if(click==JOptionPane.YES_OPTION) {
+					
+					ioFile.writeFile();
+					
+					dispose();
+					new LoginBox(db);
+				}
+				else if(click == JOptionPane.NO_OPTION) {
+					return;
+				}
+				
+				
+			}
+		});
+	}
 	
-	
-	
+	private void initNapTien() {
+		funcClientPanel.getBtnNapTien().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String serial = JOptionPane.showInputDialog("Mời bạn nhập mã thẻ");
+				
+				if(db.checkSerial(serial)) {
+					JOptionPane.showMessageDialog(null, "Nạp thẻ thành công");
+					
+					long value = db.getValueCard(serial);
+					coin += value;
+					
+					db.updateCoin(username, coin);
+					db.updateStatusCard(serial);
+					
+					
+					topPanel.remove(topPanel.getComponent(1));
+					
+					JLabel lbCoin = new JLabel("Coin : "+coin);
+					lbCoin.setHorizontalAlignment(JLabel.CENTER);
+					topPanel.add(lbCoin,BorderLayout.EAST);
+					
+					topPanel.validate();
+					topPanel.repaint();
+					
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Nạp thẻ thất bại");
+				}
+				
+			}
+		});
+	}
 	
 	public SearchClientPanel getSearchClientPanel() {
 		return searchClientPanel;
@@ -208,6 +283,14 @@ public class ClientUI extends JFrame{
 
 	public void setTableMusicPanel(TableMusicPanel tableMusicPanel) {
 		this.tableMusicPanel = tableMusicPanel;
+	}
+
+	public List<MuaHang> getListMH() {
+		return listMH;
+	}
+
+	public void setListMH(List<MuaHang> listMH) {
+		this.listMH = listMH;
 	}
 	
 	

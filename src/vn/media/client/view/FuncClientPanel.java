@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import vn.media.server.controller.DBConnector;
+
 public class FuncClientPanel extends JPanel implements ActionListener{
 	private JButton btnThemVaoGio;
 	private JButton btnXoaKhoiGio;
@@ -26,8 +28,10 @@ public class FuncClientPanel extends JPanel implements ActionListener{
 	private JTextField tfIDSanPham,tfSoLuong,tfDonGia,tfTamTinh,tfThueVAT,tfTongTien,tfTienChoSP;
 	
 	private JPanel topPanel,leftPanel,centerPanel,rightPanel;
-	
+	private DBConnector db;
 	public FuncClientPanel() {
+		this.db =db;
+		
 		setLayout(new BorderLayout(10,10));
 		setBorder(new EmptyBorder(10, 10, 10, 10));
 		setBorder(new TitledBorder("chức năng"));
@@ -84,10 +88,10 @@ public class FuncClientPanel extends JPanel implements ActionListener{
 		//panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 		
 		btnThemVaoGio=createButton("THÊM VÀO GIỎ ");
-		btnXoaKhoiGio=createButton("XÓA KHỎI GIỎ ");
+		//btnXoaKhoiGio=createButton("XÓA KHỎI GIỎ ");
 		
 		panel.add(btnThemVaoGio);
-		panel.add(btnXoaKhoiGio);
+		//panel.add(btnXoaKhoiGio);
 		
 		return panel;
 		
@@ -96,7 +100,7 @@ public class FuncClientPanel extends JPanel implements ActionListener{
 	private JPanel createCenterPanel() {
 		centerPanel = new JPanel(new BorderLayout(10,5));
 		centerPanel.setBorder(new EmptyBorder(0, 0, 0, 100));
-	
+		//centerPanel.setBorder(new TitledBorder("Thông tin đơn hàng"));
 		
 		JPanel p1 = new JPanel(new GridLayout(3, 1,30,40));
 		JPanel p2 = new JPanel(new GridLayout(3, 1,30,40));
@@ -141,10 +145,17 @@ public class FuncClientPanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	public JButton getBtnThemVaoGio() {
 		return btnThemVaoGio;
 	}
