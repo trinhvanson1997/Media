@@ -1,8 +1,8 @@
 package vn.media.main;
 
-import vn.media.common.IOFile;
-import vn.media.controller.DBConnector;
-import vn.media.view.LoginBox;
+import vn.media.server.common.IOFile;
+import vn.media.server.controller.DBConnector;
+import vn.media.server.view.LoginBox;
 
 public class Main {
 	
