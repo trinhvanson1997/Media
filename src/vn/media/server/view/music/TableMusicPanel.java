@@ -22,7 +22,7 @@ public class TableMusicPanel extends JPanel{
 	private JScrollPane scroll;
 
 	private String[] columns = { "ID", "Tên đĩa nhạc", "Thể loại", "Ca sĩ", "Số lượng tồn kho", "giá mua","giá bán","ngày nhập hàng cuối" };
-
+	private String[] columnsClient = { "ID", "Tên đĩa nhạc", "Thể loại", "Ca sĩ", "Số lượng tồn kho", "Đơn giá" };
 	public TableMusicPanel() {
 		setLayout(new BorderLayout(10, 0));
 		// setBorder(BorderFactory.createEtcheBorder(EtchedBorder.RAISED));
@@ -124,7 +124,36 @@ public class TableMusicPanel extends JPanel{
 		tableModel.fireTableDataChanged();
 		
 	}
+	public void updateTableClient(List<DiaNhac> list){
+		DecimalFormat format = (DecimalFormat) DecimalFormat.getCurrencyInstance(new Locale("vi","VN"));
+		
+		String[][] data =  new String[list.size()][columnsClient.length];
+		for(int i=0;i<list.size();i++){
+			DiaNhac s = list.get(i);
+			data[i][0] = s.getId();
+			data[i][1] = s.getTenSP();
+			data[i][2] = s.getTheLoai();
+			data[i][3] = convertListToString(s.getCaSi());
+			data[i][4] = String.valueOf(s.getSoLuongTonKho());
+			//data[i][5] = format.format(s.getGiaMua()).toString();
+			data[i][5] = format.format(s.getGiaBan()).toString();
+			//data[i][7] =  new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(s.getNgayNhapHangCuoi());
+		}
+		
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnsClient) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		};
+		
+		table.setModel(tableModel);
+		tableModel.fireTableDataChanged();
+		
+	}
 
+	
 	public JTable getTable() {
 		return table;
 	}

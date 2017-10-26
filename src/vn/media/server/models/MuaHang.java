@@ -1,15 +1,15 @@
 package vn.media.server.models;
 
-public class ChiTietHoaDon {
+public class MuaHang {
 	private String idHoaDon;
 	private String idSanPham;
 	private int soLuong;
 	
-	public ChiTietHoaDon() {
+	public MuaHang() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ChiTietHoaDon(String idHoaDon, String idSanPham, int soLuong) {
+	public MuaHang(String idHoaDon, String idSanPham, int soLuong) {
 		super();
 		this.idHoaDon = idHoaDon;
 		this.idSanPham = idSanPham;

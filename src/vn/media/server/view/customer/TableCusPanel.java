@@ -102,6 +102,8 @@ public class TableCusPanel extends JPanel {
 		tableModel.fireTableDataChanged();
 		
 	}
+	
+	
 
 	public JTable getTable() {
 		return table;

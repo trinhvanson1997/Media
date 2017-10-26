@@ -429,6 +429,46 @@ public class DBConnector {
 	
 	}
 	
+	
+	public String getCusName(String username) {
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery("SELECT hoten FROM khachhang WHERE username='"+username+"';");
+			if(rs.next()) {
+				conn.close();
+				return rs.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+	
+	public long getCoinCus(String username) {
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery("SELECT coin FROM khachhang WHERE username='"+username+"';");
+			if(rs.next()) {
+				conn.close();
+				return rs.getLong(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return 0;
+	}
+	
+	
+	
+	
+	
+	
 	/*						MOVIES				*/
 	
 	public List<Sach> getAllBook() {

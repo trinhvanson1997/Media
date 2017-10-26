@@ -21,7 +21,8 @@ public class TableBookPanel extends JPanel{
 	private JScrollPane scroll;
 
 	private String[] columns = { "ID", "Tên Sách", "Nhà xuất bản", "Tác giả", "Số lượng tồn kho", "giá mua","giá bán","ngày nhập hàng cuối" };
-
+	private String[] columnsClient = { "ID", "Tên Sách", "Nhà xuất bản", "Tác giả", "Số lượng tồn kho","Đơn giá" };
+	
 	public TableBookPanel() {
 		setLayout(new BorderLayout(10, 0));
 		// setBorder(BorderFactory.createEtcheBorder(EtchedBorder.RAISED));
@@ -108,6 +109,37 @@ public class TableBookPanel extends JPanel{
 		
 	}
 
+	public void updateTableClient(List<Sach> list){
+		DecimalFormat format = (DecimalFormat) DecimalFormat.getCurrencyInstance(new Locale("vi","VN"));
+		String[][] data =  new String[list.size()][columnsClient.length];
+		
+		for(int i=0;i<list.size();i++){
+			Sach s = list.get(i);
+			data[i][0] = s.getId();
+			data[i][1] = s.getTenSP();
+			data[i][2] = s.getNhaXB();
+			data[i][3] = convertListToString(s.getTacGia());
+			
+		
+			data[i][4] = String.valueOf(s.getSoLuongTonKho());
+			//data[i][5] = format.format(s.getGiaMua()).toString();
+			data[i][5] = format.format(s.getGiaBan()).toString();
+			//data[i][7] = new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(s.getNgayNhapHangCuoi());
+		}
+		
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnsClient) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		};
+		
+		table.setModel(tableModel);
+		tableModel.fireTableDataChanged();
+		
+	}
+	
 	public JTable getTable() {
 		return table;
 	}

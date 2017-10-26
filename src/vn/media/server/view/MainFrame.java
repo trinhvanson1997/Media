@@ -44,7 +44,8 @@ public class MainFrame extends JFrame{
 		setSize(1000,600);
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
-		
+		setTitle("MediaOne (Server)");
+		setResizable(false);
 		/* 			NORTH MAINFRAME			*/
 		topInfoPanel 	= new TopInfoPanel(username, db);
 		

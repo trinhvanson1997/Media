@@ -42,7 +42,7 @@ public class EditStaffView extends JDialog implements ActionListener{
 		setLayout(new BorderLayout(10, 10));
 		setTitle("Thông tin nhân viên");
 
-		lbID       = new JLabel("ID");  tfID.setEditable(false);
+		lbID       = new JLabel("ID");  
 		lbHoTen    = new JLabel("Họ Tên");
 		lbNgaySinh = new JLabel("Ngày Sinh");
 		lbDiaChi   = new JLabel("Địa Chỉ");
@@ -51,7 +51,7 @@ public class EditStaffView extends JDialog implements ActionListener{
 		lbUsername = new JLabel("Username");
 		lbPassword = new JLabel("Password");
 		
-		tfID       = new JTextField(15); 	tfID.setText(nv.getId());
+		tfID       = new JTextField(15); 	tfID.setText(nv.getId()); tfID.setEditable(false);
 		tfHoTen    = new JTextField(15);	tfHoTen.setText(nv.getHoTen());
 		tfNgaySinh = new JTextField(15);	tfNgaySinh.setText(new SimpleDateFormat("dd/MM/yyyy").format(nv.getNgaySinh()));
 		tfDiachi   = new JTextField(15);	tfDiachi.setText(nv.getDiaChi());

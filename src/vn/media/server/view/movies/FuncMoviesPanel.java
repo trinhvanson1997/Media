@@ -22,7 +22,7 @@ public class FuncMoviesPanel extends JPanel implements ActionListener{
 	private JButton btnTimKiem;
 	private JTextField tfSearch;
 	private TableStaffPanel tablePanel;
-	private String[] s =  { "ID", "Tên đĩa phim", "�?ạo diễn", "Diễn viên", "Số lượng tồn kho", "Giá mua","Giá bán","ngày nhập hàng cuối" };
+	private String[] s =  { "ID", "Tên đĩa phim", "Đạo diễn", "Diễn viên", "Số lượng tồn kho", "Giá mua","Giá bán","ngày nhập hàng cuối" };
 	private JComboBox<String> cbType ;
 	
 	
