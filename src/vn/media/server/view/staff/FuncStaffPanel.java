@@ -19,7 +19,7 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	private JButton btnXoa;
 	private JButton btnTimKiem;
 	private JTextField tfSearch;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 	private String[] s = {"ID","Họ tên","Ngày sinh","Địa chỉ","Số điện thoại","Lương","Username"};
 	private JComboBox<String> cbType ;
 	
@@ -144,12 +144,12 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	}
 
 
-	public TableStaffPanel getTablePanel() {
+	public TableEmployeePanel getTablePanel() {
 		return tablePanel;
 	}
 
 
-	public void setTablePanel(TableStaffPanel tablePanel) {
+	public void setTablePanel(TableEmployeePanel tablePanel) {
 		this.tablePanel = tablePanel;
 	}
 

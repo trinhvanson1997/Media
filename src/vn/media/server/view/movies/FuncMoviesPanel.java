@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class FuncMoviesPanel extends JPanel implements ActionListener{
 	private JButton btnXemTatCa;
@@ -21,7 +21,7 @@ public class FuncMoviesPanel extends JPanel implements ActionListener{
 	private JButton btnXoa;
 	private JButton btnTimKiem;
 	private JTextField tfSearch;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 	private String[] s =  { "ID", "Tên đĩa phim", "Đạo diễn", "Diễn viên", "Số lượng tồn kho", "Giá mua","Giá bán","ngày nhập hàng cuối" };
 	private JComboBox<String> cbType ;
 	
@@ -149,12 +149,12 @@ public class FuncMoviesPanel extends JPanel implements ActionListener{
 	}
 
 
-	public TableStaffPanel getTablePanel() {
+	public TableEmployeePanel getTablePanel() {
 		return tablePanel;
 	}
 
 
-	public void setTablePanel(TableStaffPanel tablePanel) {
+	public void setTablePanel(TableEmployeePanel tablePanel) {
 		this.tablePanel = tablePanel;
 	}
 

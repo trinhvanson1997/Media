@@ -19,7 +19,7 @@ public class EditPassStaffView extends JDialog implements ActionListener{
 	private JButton btnSua,btnHuy;
 	private JTextField tfUsername,tfNewPass;
 	private DBConnector db;
-	private TableStaffPanel tableStaffPanel;
+	private TableEmployeePanel tableStaffPanel;
 	
 	public EditPassStaffView(MainFrame mainFrame,DBConnector db) {
 		this.db = db;

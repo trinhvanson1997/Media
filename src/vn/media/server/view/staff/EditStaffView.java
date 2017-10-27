@@ -27,7 +27,7 @@ public class EditStaffView extends JDialog implements ActionListener{
 	private JPanel p1, p2,p3;
 	private JButton btnThem, btnHuy;
 	private DBConnector db;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 
 	private NhanVien nv;
 	

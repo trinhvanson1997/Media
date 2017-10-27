@@ -12,13 +12,13 @@ import vn.media.server.view.customer.TableCusPanel;
 import vn.media.server.view.movies.FuncMoviesPanel;
 import vn.media.server.view.music.FuncMusicPanel;
 import vn.media.server.view.staff.FuncStaffPanel;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class MainFrame extends JFrame{
 	private TopInfoPanel topInfoPanel;
 	private ChoicePanel  choicePanel;
 	
-	private TableStaffPanel   tableStaffPanel;
+	private TableEmployeePanel   tableStaffPanel;
 	private TableCusPanel tableCusPanel;
 	
 	
@@ -53,7 +53,7 @@ public class MainFrame extends JFrame{
 		choicePanel  = new ChoicePanel();
 		
 		/*			PANELS OF STAFFS			*/
-		tableStaffPanel   = new TableStaffPanel();
+		tableStaffPanel   = new TableEmployeePanel();
 		funcStaffPanel    = new FuncStaffPanel();
 		
 		/*			PANELS OF CUSTOMERS		*/
@@ -199,12 +199,12 @@ public class MainFrame extends JFrame{
 	}
 
 
-	public TableStaffPanel getTableStaffPanel() {
+	public TableEmployeePanel getTableStaffPanel() {
 		return tableStaffPanel;
 	}
 
 
-	public void setTableStaffPanel(TableStaffPanel tableStaffPanel) {
+	public void setTableStaffPanel(TableEmployeePanel tableStaffPanel) {
 		this.tableStaffPanel = tableStaffPanel;
 	}
 

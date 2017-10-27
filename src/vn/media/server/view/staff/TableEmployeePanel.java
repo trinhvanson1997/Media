@@ -15,14 +15,14 @@ import javax.swing.table.DefaultTableModel;
 
 import vn.media.server.models.NhanVien;
 
-public class TableStaffPanel extends JPanel {
+public class TableEmployeePanel extends JPanel {
 	private JTable table;
 	private JLabel lbName;
 	private JScrollPane scroll;
 
 	private String[] columns = { "ID", "Họ tên", "Ngày sinh", "Địa chỉ", "Số điện thoại", "Lương","Username" };
 
-	public TableStaffPanel() {
+	public TableEmployeePanel() {
 		setLayout(new BorderLayout(10, 0));
 		// setBorder(BorderFactory.createEtcheBorder(EtchedBorder.RAISED));
 		// setBorder(BorderFactory.createEtchedBorder());

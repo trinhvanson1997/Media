@@ -32,7 +32,7 @@ import vn.media.server.view.music.FuncMusicPanel;
 import vn.media.server.view.music.TableMusicPanel;
 import vn.media.server.view.staff.EditStaffView;
 import vn.media.server.view.staff.FuncStaffPanel;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class ChangeTableController {
 	private ChoicePanel choicePanel;
@@ -44,7 +44,7 @@ public class ChangeTableController {
 	private FuncMusicPanel 	funcMusicPanel;
 	
 	
-	private TableStaffPanel 	tableStaffPanel;
+	private TableEmployeePanel 	tableStaffPanel;
 	private TableCusPanel 		tableCusPanel;
 	private TabbedProduct 		tabbedProduct;
 	private TableBookPanel 		tableBookPanel;

@@ -10,13 +10,13 @@ import vn.media.server.controller.DBConnector;
 import vn.media.server.models.NhanVien;
 import vn.media.server.view.MainFrame;
 import vn.media.server.view.staff.FuncStaffPanel;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class ShowAllStaffController  {
 //	private DBConnector db;
 //	private MainFrame mainFrame;
 	private FuncStaffPanel funcPanel;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 	private JButton btnShowAll;
 	
 	

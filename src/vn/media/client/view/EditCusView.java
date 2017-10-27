@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 import vn.media.server.controller.DBConnector;
 import vn.media.server.models.KhachHang;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class EditCusView extends JDialog implements ActionListener{
 	
@@ -29,7 +29,7 @@ public class EditCusView extends JDialog implements ActionListener{
 	private JPanel p1, p2,p3;
 	private JButton btnThem, btnHuy;
 	private DBConnector db;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 
 	private KhachHang nv;
 	

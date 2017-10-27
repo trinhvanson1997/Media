@@ -10,11 +10,11 @@ import javax.swing.JOptionPane;
 import vn.media.server.controller.DBConnector;
 import vn.media.server.models.NhanVien;
 import vn.media.server.view.MainFrame;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class DeleteStaffController {
 	private JButton btnXoa;
-	private TableStaffPanel tableStaffPanel;
+	private TableEmployeePanel tableStaffPanel;
 	
 	public DeleteStaffController(MainFrame mainFrame,DBConnector db) {
 		btnXoa = mainFrame.getFuncStaffPanel().getBtnXoa();

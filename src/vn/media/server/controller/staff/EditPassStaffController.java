@@ -9,11 +9,11 @@ import javax.swing.JOptionPane;
 import vn.media.server.controller.DBConnector;
 import vn.media.server.view.MainFrame;
 import vn.media.server.view.staff.EditPassStaffView;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class EditPassStaffController {
 	private JButton btnSua;
-	private TableStaffPanel tableStaffPanel;
+	private TableEmployeePanel tableStaffPanel;
 	
 	public EditPassStaffController(MainFrame mainFrame,DBConnector db) {
 		btnSua = mainFrame.getFuncStaffPanel().getBtnSua();

@@ -8,11 +8,11 @@ import javax.swing.JButton;
 import vn.media.server.controller.DBConnector;
 import vn.media.server.view.MainFrame;
 import vn.media.server.view.staff.AddStaffView;
-import vn.media.server.view.staff.TableStaffPanel;
+import vn.media.server.view.staff.TableEmployeePanel;
 
 public class AddStaffController {
 	private JButton btnThem;
-	private TableStaffPanel tablePanel;
+	private TableEmployeePanel tablePanel;
 	
 	public AddStaffController(MainFrame mainFrame,DBConnector db) {
 		btnThem = mainFrame.getFuncStaffPanel().getBtnThem();
