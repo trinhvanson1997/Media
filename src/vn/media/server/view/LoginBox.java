@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -96,8 +97,31 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 		panel.setLayout(new GridLayout(2, 1,10,10));
 		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
-		tfUsername = new JTextField(15);
+		tfUsername = new JTextField(15); 
 		tfPassword = new JPasswordField(15);
+		
+		
+		tfUsername.addKeyListener(new KeyAdapter(){
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode()==KeyEvent.VK_ENTER) {
+					tfPassword.requestFocus();
+				}
+			}
+			
+		});
+		
+		tfPassword.addKeyListener(new KeyAdapter(){
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode()==KeyEvent.VK_ENTER) {
+					btnLogin.doClick();
+				}
+			}
+			
+		});
 		
 		panel.add(tfUsername);
 		panel.add(tfPassword);
@@ -288,8 +312,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+	
 	}
 
 	@Override
