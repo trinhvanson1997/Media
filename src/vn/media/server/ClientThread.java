@@ -168,6 +168,7 @@ public class ClientThread extends Thread{
 					if(db.addCus("KH"+sp.indexOfCus, kh.getHoTen(),
 							kh.getNgaySinh(), kh.getDiaChi(), kh.getsDT(), kh.getCoin(), 
 							kh.getUsername(), kh.getPassword())) {
+						sp.indexOfCus++;
 						out.writeBoolean(true);
 						out.flush();
 					}
