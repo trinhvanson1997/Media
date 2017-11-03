@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
 import vn.media.models.DiaPhim;
+import vn.media.models.KhachHang;
+import vn.media.models.NhanVien;
 import vn.media.models.Sach;
 import vn.media.view.bill.TableBillPanel;
 import vn.media.view.book.FuncBookPanel;
@@ -26,6 +28,9 @@ public class MainFrame extends JFrame{
 	private List<Sach> listBook;
 	private List<DiaPhim> listMovie;
 	private List<DiaNhac> listMusic;
+	
+	private List<NhanVien> listStaff;
+	private List<KhachHang> listCus;
 	
 	private TableStaffPanel   tableStaffPanel;
 	private TableCusPanel tableCusPanel;
@@ -54,7 +59,8 @@ public class MainFrame extends JFrame{
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
 		setTitle("MediaOne (Server)");
-		setResizable(false);
+		
+		setResizable(true);
 		/* 			NORTH MAINFRAME			*/
 		topInfoPanel 	= new TopInfoPanel(username, db);
 		
@@ -103,10 +109,25 @@ public class MainFrame extends JFrame{
 		listMovie = db.getAllMovies();
 		listMusic = db.getAllMusic();
 		
+		listStaff = db.getAllStaff();
+		listCus = db.getAllCus();
+		
 		initTableProduct();
+		initTableStaff();
+		initTableCus();
+	
 		setVisible(true);
 	}
 	
+	public void initTableStaff() {
+		tableStaffPanel.updateTable(listStaff);
+		
+	}
+	
+	public void initTableCus() {
+		tableCusPanel.updateTable(listCus);
+	}
+
 	private JPanel createMainPanel() {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout(20,20));
@@ -126,7 +147,7 @@ public class MainFrame extends JFrame{
 	}
 
 	
-	void initTableProduct() {
+	public void initTableProduct() {
 		tabbedProduct.getTableBookPanel().updateTable(listBook);
 		tabbedProduct.getTableMoviesPanel().updateTable(listMovie);
 		tabbedProduct.getTableMusicPanel().updateTable(listMusic);
@@ -280,6 +301,46 @@ public class MainFrame extends JFrame{
 
 	public void setFuncMusicPanel(FuncMusicPanel funcMusicPanel) {
 		this.funcMusicPanel = funcMusicPanel;
+	}
+
+	public List<Sach> getListBook() {
+		return listBook;
+	}
+
+	public void setListBook(List<Sach> listBook) {
+		this.listBook = listBook;
+	}
+
+	public List<DiaPhim> getListMovie() {
+		return listMovie;
+	}
+
+	public void setListMovie(List<DiaPhim> listMovie) {
+		this.listMovie = listMovie;
+	}
+
+	public List<DiaNhac> getListMusic() {
+		return listMusic;
+	}
+
+	public void setListMusic(List<DiaNhac> listMusic) {
+		this.listMusic = listMusic;
+	}
+
+	public List<NhanVien> getListStaff() {
+		return listStaff;
+	}
+
+	public void setListStaff(List<NhanVien> listStaff) {
+		this.listStaff = listStaff;
+	}
+
+	public List<KhachHang> getListCus() {
+		return listCus;
+	}
+
+	public void setListCus(List<KhachHang> listCus) {
+		this.listCus = listCus;
 	}
 	
 	

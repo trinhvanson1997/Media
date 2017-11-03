@@ -20,7 +20,7 @@ public class ClientThread extends Thread{
 			,GET_ALL_MUSIC=6,GET_CUSTOMER_NAME=7,GET_COIN_CUS=8,GET_SLTK=9,UPDATE_COIN=10
 					,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
 					,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
-							,ADD_CUSTOMER=17;
+							,ADD_CUSTOMER=17,CLOSE_REQUEST=18;
 	public Socket socket;
 	public Server server;
 	public DBConnector db;
@@ -177,7 +177,10 @@ public class ClientThread extends Thread{
 						out.flush();
 					}
 				}
-				
+				else if(stt == CLOSE_REQUEST) {
+					socket.close();
+					this.stop();
+				}
 				
 				
 			} catch (IOException e) {

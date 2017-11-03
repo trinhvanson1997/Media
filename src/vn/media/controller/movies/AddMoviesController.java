@@ -23,7 +23,7 @@ public class AddMoviesController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-				new AddMoviesView(db, tableMoviesPanel);
+				new AddMoviesView(mainFrame,db, tableMoviesPanel);
 				
 			}
 		});

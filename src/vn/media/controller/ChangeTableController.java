@@ -111,8 +111,7 @@ public class ChangeTableController {
 					funcPanel.revalidate();
 					funcPanel.repaint();
 					
-					List<NhanVien > list = db.getAllStaff();
-					tableStaffPanel.updateTable(list);
+			
 					
 				}
 				else {
@@ -135,8 +134,7 @@ public class ChangeTableController {
 				funcPanel.revalidate();
 				funcPanel.repaint();
 				
-				List<KhachHang > list = db.getAllCus();
-				tableCusPanel.updateTable(list);
+			
 			}
 		});
 		
@@ -186,9 +184,7 @@ public class ChangeTableController {
 	            if(tabbedProduct.getSelectedIndex() == 0) {
 	        		
 					
-					List<Sach > list = db.getAllBook();
-					tableBookPanel.updateTable(list);
-					
+				
 	            	funcPanel.remove(funcPanel.getComponent(0));
 					funcPanel.add(funcBookPanel, BorderLayout.CENTER);
 					funcPanel.revalidate();
@@ -196,8 +192,7 @@ public class ChangeTableController {
 	            }
 	            else if(tabbedProduct.getSelectedIndex() == 1) {
 	            	
-	            	List<DiaPhim > list1 = db.getAllMovies();
-					tableMoviesPanel.updateTable(list1);
+	            
 					
 	            	funcPanel.remove(funcPanel.getComponent(0));
 					funcPanel.add(funcMoviesPanel, BorderLayout.CENTER);
@@ -212,8 +207,7 @@ public class ChangeTableController {
 					funcPanel.revalidate();
 					funcPanel.repaint();
 					
-					List<DiaNhac > list2 = db.getAllMusic();
-					tableMusicPanel.updateTable(list2);
+				
 	            }
 	        }
 	    });

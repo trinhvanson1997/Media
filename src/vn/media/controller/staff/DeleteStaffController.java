@@ -30,7 +30,14 @@ public class DeleteStaffController {
 					int click = JOptionPane.showConfirmDialog(tableStaffPanel, "Bạn muốn xóa nhân viên '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
 					if(JOptionPane.YES_OPTION==click) {
 						db.deleteStaff(id);
-						List<NhanVien> list = db.getAllStaff();
+						List<NhanVien> list = mainFrame.getListStaff();
+						for(int i=0;i<list.size();i++) {
+							if(list.get(i).getId().equals(id)) {
+								list.remove(i);
+							}
+						}
+						
+						mainFrame.setListStaff(list);
 						tableStaffPanel.updateTable(list);
 						JOptionPane.showMessageDialog(null, "Xóa nhân viên thành công");
 					}

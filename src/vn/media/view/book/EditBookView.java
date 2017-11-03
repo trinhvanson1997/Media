@@ -4,9 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.Sach;
+import vn.media.view.MainFrame;
 
 public class EditBookView extends JDialog implements ActionListener{
 	private static final int WARNING_MESSAGE = 0;
@@ -34,12 +33,12 @@ public class EditBookView extends JDialog implements ActionListener{
 	private TableBookPanel tableBookPanel;
 	private Sach sach;
 	Timestamp date = new Timestamp(new Date().getTime());
-	
-	public EditBookView(DBConnector db, TableBookPanel tableBookPanel,Sach sach) {
+	private MainFrame mainFrame;
+	public EditBookView(MainFrame mainFrame,DBConnector db, TableBookPanel tableBookPanel,Sach sach) {
 		this.db = db;
 		this.tableBookPanel=tableBookPanel;
 		this.sach = sach;
-		
+		this.mainFrame = mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -121,14 +120,10 @@ public class EditBookView extends JDialog implements ActionListener{
 			dispose();
 		}
 		if (e.getSource() == btnSua) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+		
 			
 			if(checkFormat() == true){
-			
-				int year = Integer.parseInt(tfNgayNhapCuoi.getText().substring(0, 4)) - 1900;
-				int month = Integer.parseInt(tfNgayNhapCuoi.getText().substring(5, 7)) - 1;
-				int day = Integer.parseInt(tfNgayNhapCuoi.getText().substring(8, 10));
-
+		
 				try {
 					String id 		= tfID.getText();
 					String tensp 	= tfTenSP.getText();
@@ -143,17 +138,12 @@ public class EditBookView extends JDialog implements ActionListener{
 					Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, date, nxb, tacgia);
 					
 					
-					try {
-						db.editBook(sach);
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					db.editBook(sach);
 					dispose();
 					
 					List<Sach> list = db.getAllBook();
 					tableBookPanel.updateTable(list);
-					
+					mainFrame.setListBook(list);
 					JOptionPane.showMessageDialog(null, "Sửa sách thành công");
 					
 					 

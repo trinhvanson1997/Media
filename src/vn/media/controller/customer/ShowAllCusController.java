@@ -23,7 +23,7 @@ public class ShowAllCusController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<KhachHang> list= db.getAllCus();
+				List<KhachHang> list= mainFrame.getListCus();
 				
 				tableCusPanel.updateTable(list);
 			}

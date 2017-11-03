@@ -30,9 +30,18 @@ public class DeleteMusicController {
 					String id = tableMusicPanel.getTable().getModel().getValueAt(index, 0).toString();
 					int click =JOptionPane.showConfirmDialog(tableMusicPanel, "Bạn muốn xóa dĩa nhạc mã '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
 					if(JOptionPane.YES_OPTION==click) {
-						db.deleteMusic(id);
+					
 						List<DiaNhac> list = db.getAllMusic();
+						for(int i=0;i<list.size();i++) {
+							if(list.get(i).getId().equals(id)) {
+								list.remove(i);
+								break;
+							}
+						}
+						
 						tableMusicPanel.updateTable(list);
+						mainFrame.setListMusic(list);
+						db.deleteMusic(id);
 						JOptionPane.showMessageDialog(null, "Xóa đĩa nhạc thành công");
 					}
 					if(JOptionPane.NO_OPTION == click) {

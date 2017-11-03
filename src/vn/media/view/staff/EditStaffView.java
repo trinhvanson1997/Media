@@ -57,7 +57,7 @@ public class EditStaffView extends JDialog implements ActionListener{
 		tfDiachi   = new JTextField(15);	tfDiachi.setText(nv.getDiaChi());
 		tfSDT      = new JTextField(15);	tfSDT.setText(nv.getsDT());
 	
-		tfUsername = new JTextField(15);	tfUsername.setText(nv.getUsername());
+		tfUsername = new JTextField(15);	tfUsername.setText(nv.getUsername()); tfUsername.setEditable(false);
 		tfPassword = new JTextField(15);	tfPassword.setText(nv.getPassword());
 		
 		btnThem    = new JButton("SỬA ");		btnThem.addActionListener(this);

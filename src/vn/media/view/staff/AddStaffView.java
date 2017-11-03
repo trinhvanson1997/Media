@@ -17,9 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import vn.media.common.IOFile;
 import vn.media.controller.DBConnector;
 import vn.media.models.NhanVien;
 import vn.media.models.SanPham;
+import vn.media.view.MainFrame;
 
 public class AddStaffView extends JDialog implements ActionListener {
 	private static final int WARNING_MESSAGE = 0;
@@ -31,10 +33,11 @@ public class AddStaffView extends JDialog implements ActionListener {
 	private DBConnector db;
 	private TableStaffPanel tablePanel;
 	private SanPham sp;
-	
-	public AddStaffView(DBConnector db, TableStaffPanel tablePanel) {
+	private MainFrame mainFrame;
+	public AddStaffView(MainFrame mainFrame,DBConnector db, TableStaffPanel tablePanel) {
 		this.db = db;
 		this.tablePanel=tablePanel;
+		this.mainFrame = mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -111,10 +114,16 @@ public class AddStaffView extends JDialog implements ActionListener {
 					db.addStaff(tfID.getText(), tfHoTen.getText(), date,
 							tfDiachi.getText(), tfSDT.getText(), Long.parseLong(tfLuong.getText()),tfUsername.getText(),tfPassword.getText());
 					dispose();
-					List<NhanVien> list = db.getAllStaff();
+					List<NhanVien> list = mainFrame.getListStaff();
+					list.add(new NhanVien(tfID.getText(), tfHoTen.getText(), date,
+							tfDiachi.getText(), tfSDT.getText(), Long.parseLong(tfLuong.getText()),tfUsername.getText(),tfPassword.getText()));
+					
+					mainFrame.setListStaff(list);
 					tablePanel.updateTable(list);
 					JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công");
 					sp.indexOfStaff++;
+					
+					new IOFile().writeFile();
 					 
 				} catch (NumberFormatException e1) {
 				

@@ -18,9 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import vn.media.common.IOFile;
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaPhim;
 import vn.media.models.SanPham;
+import vn.media.view.MainFrame;
 
 public class AddMoviesView extends JDialog implements ActionListener{
 	private static final int WARNING_MESSAGE = 0;
@@ -34,10 +36,11 @@ public class AddMoviesView extends JDialog implements ActionListener{
 	private TableMoviesPanel tableMoviesPanel;
 	private SanPham sp;
 	Timestamp date = new Timestamp(new Date().getTime());
-	
-	public AddMoviesView(DBConnector db, TableMoviesPanel tableMoviesPanel) {
+	private MainFrame mainFrame;
+	public AddMoviesView(MainFrame mainFrame,DBConnector db, TableMoviesPanel tableMoviesPanel) {
 		this.db = db;
 		this.tableMoviesPanel=tableMoviesPanel;
+		this.mainFrame =mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -109,13 +112,10 @@ public class AddMoviesView extends JDialog implements ActionListener{
 			dispose();
 		}
 		if (e.getSource() == btnThem) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			
+
 			if(checkFormat() == true){
 			
-				int year = Integer.parseInt(tfNgayNhapCuoi.getText().substring(0, 4)) - 1900;
-				int month = Integer.parseInt(tfNgayNhapCuoi.getText().substring(5, 7)) - 1;
-				int day = Integer.parseInt(tfNgayNhapCuoi.getText().substring(8, 10));
+			
 
 				try {
 					String id 		= tfID.getText();
@@ -134,11 +134,14 @@ public class AddMoviesView extends JDialog implements ActionListener{
 					
 					dispose();
 					
-					List<DiaPhim> list = db.getAllMovies();
+					List<DiaPhim> list =mainFrame.getListMovie();
+					list.add(diaphim);
 					tableMoviesPanel.updateTable(list);
+					mainFrame.setListMovie(list);
 					JOptionPane.showMessageDialog(null, "Thêm đĩa phim thành công");
 					
 					 sp.indexOfMovies++;
+					 new IOFile().writeFile();
 				} catch (NumberFormatException e1) {
 				
 					// TODO Auto-generated catch block
@@ -173,13 +176,7 @@ private List<String> convertStringToList(String s){
 	}
 	
 	private boolean checkFormat(){
-		if (db.checkExistBook(tfID.getText())) {
-			JOptionPane.showMessageDialog(null, "ID đĩa phim '" + tfID.getText() + "' đã tồn tại!", "Warning",
-					WARNING_MESSAGE);
-			return false;
-		} 
-	
-		else if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
+	 if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
 				tfSoLuong.getText().equals(null) || tfSoLuong.getText().equals("") ||
 				tfDaoDien.getText().equals(null) || tfDaoDien.getText().equals("") ||
 				tfDienVien.getText().equals(null) || tfDienVien.getText().equals("") ||
@@ -191,10 +188,7 @@ private List<String> convertStringToList(String s){
 			JOptionPane.showMessageDialog(null, "Các trư�?ng dữ liệu không được để trống","Cảnh báo",JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
-//		else if(tfNgayNhapCuoi.getText().length() != 10){
-//			JOptionPane.showMessageDialog(null, "Ngày phải có dạng yyyy/MM/dd vd. 1997/09/01","Cảnh báo",0);
-//			return false;
-//		}
+
 		else if( Long.parseLong(tfGiaMua.getText()) <0 ||
 				 Long.parseLong(tfGiaMua.getText()) <0 ||
 				 Integer.parseInt(tfSoLuong.getText()) < 0

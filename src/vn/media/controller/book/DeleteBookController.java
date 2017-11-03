@@ -30,10 +30,21 @@ public class DeleteBookController {
 					String id = tableBookPanel.getTable().getModel().getValueAt(index, 0).toString();
 					int click = JOptionPane.showConfirmDialog(tableBookPanel, "Bạn muốn xóa sách mã '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
 					if(JOptionPane.YES_OPTION==click) {
-						db.deleteBook(id);
-						List<Sach> list = db.getAllBook();
+						
+						List<Sach> list = mainFrame.getListBook();
+						for(int i=0;i<list.size();i++) {
+							if(list.get(i).getId().equals(id)) {
+								list.remove(i);
+								break;
+							}
+						}
+						
+						mainFrame.setListBook(list);
 						tableBookPanel.updateTable(list);
+						
+						db.deleteBook(id);
 						JOptionPane.showMessageDialog(null, "Xóa sách thành công");
+						
 					}
 					
 					if(JOptionPane.NO_OPTION == click) {

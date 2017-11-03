@@ -31,7 +31,7 @@ public class ShowAllStaffController  {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<NhanVien> list = db.getAllStaff();
+				List<NhanVien> list = mainFrame.getListStaff();
 				tablePanel.updateTable(list);
 				
 			}

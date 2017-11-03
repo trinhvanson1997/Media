@@ -33,7 +33,7 @@ public class SearchMoviesController {
 	
 		
 		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
-			List<DiaPhim> list = db.getAllMovies();
+			List<DiaPhim> list =mainFrame.getListMovie();
 			
 			@Override
 			public void removeUpdate(DocumentEvent e) {

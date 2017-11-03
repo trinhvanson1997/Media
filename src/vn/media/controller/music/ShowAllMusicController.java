@@ -25,7 +25,7 @@ public class ShowAllMusicController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<DiaNhac> list = db.getAllMusic();
+				List<DiaNhac> list = mainFrame.getListMusic();
 				tableMusicPanel.updateTable(list);
 		
 			}

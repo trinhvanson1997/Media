@@ -24,7 +24,7 @@ public class ShowAllMoviesController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<DiaPhim> list = db.getAllMovies();
+				List<DiaPhim> list = mainFrame.getListMovie();
 				tableMoviesPanel.updateTable(list);
 		
 			}

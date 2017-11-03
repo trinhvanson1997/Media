@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaPhim;
+import vn.media.models.Sach;
 import vn.media.view.MainFrame;
 import vn.media.view.movies.TableMoviesPanel;
 
@@ -29,11 +30,22 @@ public class DeleteMoviesController {
 				if(index >=0) {
 					String id = tableMoviesPanel.getTable().getModel().getValueAt(index, 0).toString();
 					int click = JOptionPane.showConfirmDialog(tableMoviesPanel, "Bạn muốn xóa đĩa phim mã '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
-					if(JOptionPane.YES_OPTION==click) {
-						db.deleteMovies(id);
-						List<DiaPhim> list = db.getAllMovies();
+if(JOptionPane.YES_OPTION==click) {
+						
+						List<DiaPhim> list = mainFrame.getListMovie();
+						for(int i=0;i<list.size();i++) {
+							if(list.get(i).getId().equals(id)) {
+								list.remove(i);
+								break;
+							}
+						}
+						
+						mainFrame.setListMovie(list);
 						tableMoviesPanel.updateTable(list);
-						JOptionPane.showMessageDialog(null, "Xóa đĩa phim thành công");
+						
+						db.deleteMovies(id);
+						JOptionPane.showMessageDialog(null, "Xóa Dia phim thành công");
+						
 					}
 					
 					if(JOptionPane.NO_OPTION == click) {

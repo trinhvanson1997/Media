@@ -19,7 +19,7 @@ public class Main {
 		Server server = new Server(db);
 		server.serve();
 		
-		System.out.println("hehe");
+		
 		
 	}
 }

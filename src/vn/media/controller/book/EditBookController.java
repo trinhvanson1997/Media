@@ -32,7 +32,7 @@ public class EditBookController {
 					String id = tableBookPanel.getTable().getModel().getValueAt(index, 0).toString();
 
 					Sach sach = db.getBook(id);
-					new EditBookView(db, tableBookPanel, sach);
+					new EditBookView(mainFrame,db, tableBookPanel, sach);
 				} else {
 
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn sách cần sửa !", "Thông báo",

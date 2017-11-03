@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,9 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import vn.media.common.IOFile;
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
 import vn.media.models.SanPham;
+import vn.media.view.MainFrame;
 
 public class AddMusicView extends JDialog implements ActionListener{
 	private static final int WARNING_MESSAGE = 0;
@@ -34,10 +35,12 @@ public class AddMusicView extends JDialog implements ActionListener{
 	private TableMusicPanel tableMusicPanel;
 	private SanPham sp;
 	Timestamp date = new Timestamp(new Date().getTime());
+	private MainFrame mainFrame;
 	
-	public AddMusicView(DBConnector db, TableMusicPanel tableMusicPanel) {
+	public AddMusicView(MainFrame mainFrame,DBConnector db, TableMusicPanel tableMusicPanel) {
 		this.db = db;
 		this.tableMusicPanel=tableMusicPanel;
+		this.mainFrame = mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -109,14 +112,10 @@ public class AddMusicView extends JDialog implements ActionListener{
 			dispose();
 		}
 		if (e.getSource() == btnThem) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+		
 			
 			if(checkFormat() == true){
 			
-				int year = Integer.parseInt(tfNgayNhapCuoi.getText().substring(0, 4)) - 1900;
-				int month = Integer.parseInt(tfNgayNhapCuoi.getText().substring(5, 7)) - 1;
-				int day = Integer.parseInt(tfNgayNhapCuoi.getText().substring(8, 10));
-
 				try {
 					String id 		= tfID.getText();
 					String tensp 	= tfTenSP.getText();
@@ -134,11 +133,15 @@ public class AddMusicView extends JDialog implements ActionListener{
 					
 					dispose();
 					
-					List<DiaNhac> list = db.getAllMusic();
+					List<DiaNhac> list = mainFrame.getListMusic();
+					list.add(dianhac);
+					
 					tableMusicPanel.updateTable(list);
+					mainFrame.setListMusic(list);
 					JOptionPane.showMessageDialog(null, "Thêm đĩa nhạc thành công");
 					
 					 sp.indexOfMusic++;
+					 new IOFile().writeFile();
 				} catch (NumberFormatException e1) {
 				
 					// TODO Auto-generated catch block
@@ -173,13 +176,7 @@ private List<String> convertStringToList(String s){
 	}
 	
 	private boolean checkFormat(){
-		if (db.checkExistBook(tfID.getText())) {
-			JOptionPane.showMessageDialog(null, "ID đĩa nhạc '" + tfID.getText() + "' đã tồn tại!", "Warning",
-					WARNING_MESSAGE);
-			return false;
-		} 
-	
-		else if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
+		if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
 				tfSoLuong.getText().equals(null) || tfSoLuong.getText().equals("") ||
 				tfTheLoai.getText().equals(null) || tfTheLoai.getText().equals("") ||
 				tfCaSi.getText().equals(null) || tfCaSi.getText().equals("") ||
@@ -191,10 +188,7 @@ private List<String> convertStringToList(String s){
 			JOptionPane.showMessageDialog(null, "Các trường dữ liệu không được để trống","Cảnh báo",JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
-//		else if(tfNgayNhapCuoi.getText().length() != 10){
-//			JOptionPane.showMessageDialog(null, "Ngày phải có dạng yyyy/MM/dd vd. 1997/09/01","Cảnh báo",0);
-//			return false;
-//		}
+
 		else if( Long.parseLong(tfGiaMua.getText()) <0 ||
 				 Long.parseLong(tfGiaMua.getText()) <0 ||
 				 Integer.parseInt(tfSoLuong.getText()) < 0

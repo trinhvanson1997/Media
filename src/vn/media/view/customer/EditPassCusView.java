@@ -59,7 +59,7 @@ public class EditPassCusView extends JDialog implements ActionListener{
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 1,15,15));
-		tfUsername = new JTextField(15); tfUsername.setText(username);
+		tfUsername = new JTextField(15); tfUsername.setText(username); tfUsername.setEditable(false);
 		tfNewPass = new JTextField(15);
 		panel.add(tfUsername);
 		panel.add(tfNewPass);
@@ -69,7 +69,7 @@ public class EditPassCusView extends JDialog implements ActionListener{
 	
 	private JPanel createButtonPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(1, 2,30,30));
+		panel.setLayout(new GridLayout(1, 2,10,10));
 		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		btnSua = createButton("Sửa");
 		btnHuy = createButton("Hủy");
@@ -94,16 +94,11 @@ public class EditPassCusView extends JDialog implements ActionListener{
 			String username = tfUsername.getText();
 			String pass = tfNewPass.getText();
 			
-			if(db.checkExistUsernameCus(username)==false){
-				JOptionPane.showMessageDialog(null, "ID nhân viên '" + tfUsername.getText() + "' không tồn tại!", "Warning",
-						JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			else{
+			
 				db.editPass(username, pass);
 				dispose();
 				JOptionPane.showMessageDialog(null, "Thay đổi mật khẩu thành công");
-			}
+			
 		}
 		
 	}

@@ -24,6 +24,8 @@ public class SearchStaffController {
 	private JTextField tfSearch;
 	private JComboBox<String> cbType;
 	private DBConnector db;
+	
+	
 	public SearchStaffController(MainFrame mainFrame,DBConnector db) {
 		this.db = db;
 		
@@ -34,7 +36,7 @@ public class SearchStaffController {
 		
 	
 		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
-			List<NhanVien> list = db.getAllStaff();
+			List<NhanVien> list = mainFrame.getListStaff();
 			
 			@Override
 			public void removeUpdate(DocumentEvent arg0) {

@@ -32,7 +32,7 @@ public class SearchMusicController {
 		
 	
 		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
-			List<DiaNhac> list = db.getAllMusic();
+			List<DiaNhac> list = mainFrame.getListMusic();
 	
 			
 			@Override

@@ -36,7 +36,7 @@ public class SearchCusController {
 		
 
 		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
-			List<KhachHang> list = db.getAllCus();
+			List<KhachHang> list = mainFrame.getListCus();
 			
 			@Override
 			public void removeUpdate(DocumentEvent e) {

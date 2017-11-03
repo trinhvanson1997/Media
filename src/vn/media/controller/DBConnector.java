@@ -745,7 +745,7 @@ return false;
 		return null;
 	}
 
-	public void editBook(Sach sach) throws SQLException {
+	public void editBook(Sach sach)  {
 		conn = getConnection();
 		String id 		= sach.getId();
 		String tensp 	= sach.getTenSP();
@@ -939,7 +939,7 @@ return false;
 		return null;
 	}
 
-	public void editMovies(DiaPhim diaphim) throws SQLException {
+	public void editMovies(DiaPhim diaphim)  {
 		conn = getConnection();
 		String id 		= diaphim.getId();
 		String tensp 	= diaphim.getTenSP();

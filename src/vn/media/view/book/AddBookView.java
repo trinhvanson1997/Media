@@ -18,9 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import vn.media.common.IOFile;
 import vn.media.controller.DBConnector;
 import vn.media.models.Sach;
 import vn.media.models.SanPham;
+import vn.media.view.MainFrame;
 
 public class AddBookView extends JDialog implements ActionListener {
 	private static final int WARNING_MESSAGE = 0;
@@ -35,12 +37,13 @@ public class AddBookView extends JDialog implements ActionListener {
 	private SanPham sp;
 	Timestamp date = new Timestamp(new Date().getTime());
 	
-
+	private MainFrame mainFrame;
 	
 	
-	public AddBookView(DBConnector db, TableBookPanel tableBookPanel) {
+	public AddBookView(MainFrame mainFrame,DBConnector db, TableBookPanel tableBookPanel) {
 		this.db = db;
 		this.tableBookPanel=tableBookPanel;
+	this.mainFrame = mainFrame;
 	
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -114,16 +117,10 @@ public class AddBookView extends JDialog implements ActionListener {
 			dispose();
 		}
 		if (e.getSource() == btnThem) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-			
-		
-			
+
+
 			if(checkFormat() == true){
 			
-				int year = Integer.parseInt(tfNgayNhapCuoi.getText().substring(0, 4)) - 1900;
-				int month = Integer.parseInt(tfNgayNhapCuoi.getText().substring(5, 7)) - 1;
-				int day = Integer.parseInt(tfNgayNhapCuoi.getText().substring(8, 10));
-
 				try {
 					String id 		= tfID.getText();
 					String tensp 	= tfTenSP.getText();
@@ -141,11 +138,15 @@ public class AddBookView extends JDialog implements ActionListener {
 					
 					dispose();
 					
-					List<Sach> list = db.getAllBook();
+					List<Sach> list =mainFrame.getListBook();
+					list.add(sach);
+					mainFrame.setListBook(list);
 					tableBookPanel.updateTable(list);
 					JOptionPane.showMessageDialog(null, "Thêm sách thành công");
 					
 					 sp.indexOfBook++;
+					 new IOFile().writeFile();
+					 
 				} catch (NumberFormatException e1) {
 				
 					// TODO Auto-generated catch block
@@ -180,13 +181,7 @@ private List<String> convertStringToList(String s){
 	}
 	
 	private boolean checkFormat(){
-		if (db.checkExistBook(tfID.getText())) {
-			JOptionPane.showMessageDialog(null, "ID sách '" + tfID.getText() + "' đã tồn tại!", "Warning",
-					WARNING_MESSAGE);
-			return false;
-		} 
-	
-		else if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
+	 if(tfTenSP.getText().equals(null) || tfTenSP.getText().equals("") ||
 				tfSoLuong.getText().equals(null) || tfSoLuong.getText().equals("") ||
 				tfNXB.getText().equals(null) || tfNXB.getText().equals("") ||
 				tfTacGia.getText().equals(null) || tfTacGia.getText().equals("") ||

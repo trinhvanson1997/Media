@@ -23,7 +23,7 @@ public class AddBookController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-				new AddBookView(db, tableBookPanel);
+				new AddBookView(mainFrame,db, tableBookPanel);
 				
 			}
 		});

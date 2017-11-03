@@ -35,7 +35,7 @@ public class SearchBookController {
 		
 
 		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
-			List<Sach> list = db.getAllBook();
+			List<Sach> list = mainFrame.getListBook();
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				showSearchList();

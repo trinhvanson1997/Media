@@ -25,7 +25,7 @@ public class ShowAllBookController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<Sach> list = db.getAllBook();
+				List<Sach> list =mainFrame.getListBook();
 				tableBookPanel.updateTable(list);
 		
 			}

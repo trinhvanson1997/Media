@@ -230,14 +230,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 					System.out.println("you loggin as a staff");
 				
 				MainFrame  mainFrame = new MainFrame(username,db);
-				 
-				/*          FUNCTIONS OF STAFF        */
-				 new ShowAllStaffController(mainFrame,db);
-				 new AddStaffController(mainFrame, db);
-				 new EditPassStaffController(mainFrame, db);
-				 new DeleteStaffController(mainFrame, db);
-				 new SearchStaffController(mainFrame, db);
-				 
+		
 				 /*			CHANGE MAINPANEL     		*/
 				new ChangeTableController(mainFrame,db);
 				
@@ -277,59 +270,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				        ioFile.writeFile();
 				    }
 				});
-				/*
-				try {
-					ServerSocket server = new ServerSocket(90);
-					
-					System.out.println("Server is ready!");
-					
-					Socket socket = server.accept();
-					
-					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-					if(ois != null) {
-						try {
-							List<MuaHang> listMH = (List<MuaHang>) ois.readObject();
-							System.out.println("RECIEVED");
-							for(MuaHang mh:listMH) {
-							
-							System.out.println("id hoa don: "+ mh.getIdHoaDon());
-							System.out.println("id san pham: "+ mh.getIdSanPham());
-							System.out.println("so luong: "+ mh.getSoLuong());
-							System.out.println("don gia: "+mh.getDonGia());
-							System.out.println();
-							
-							}
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-					}
-					socket.close();
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				*/
-				 
 			}
-			
-//			
-//			else if(db.checkTypeAcc(username).equals("khachhang")) {
-//				System.out.println("you loggin as a customer");
-//				
-//				ClientUI clientUI= new ClientUI(username,db);
-//				new ChangeTableClient(clientUI,db);
-//				new SearchBookClient(clientUI, db);
-//				new SearchMovieClient(clientUI, db);
-//				new SearchMusicClient(clientUI, db);
-//				new ClickTableClient(clientUI, db);
-//				new AddProductClient(clientUI, db);
-//				new SeeCartController(clientUI, db);
-//				
-//				
-//			}
 			
 		}
 		

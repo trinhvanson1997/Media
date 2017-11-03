@@ -32,7 +32,7 @@ public class EditMoviesController {
 					String id = tableMoviescPanel.getTable().getModel().getValueAt(index, 0).toString();
 
 					DiaPhim diaphim = db.getMovies(id);
-					new EditMoviesView(db, tableMoviescPanel, diaphim);
+					new EditMoviesView(mainFrame,db, tableMoviescPanel, diaphim);
 				} else {
 
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn đĩa phim cần sửa !", "Thông báo",

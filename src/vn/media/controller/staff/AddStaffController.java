@@ -23,7 +23,7 @@ public class AddStaffController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-				new AddStaffView(db, tablePanel);
+				new AddStaffView(mainFrame,db, tablePanel);
 				
 			}
 		});

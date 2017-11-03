@@ -23,7 +23,7 @@ public class AddMusicController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-				new AddMusicView(db, tableMusicPanel);
+				new AddMusicView(mainFrame,db, tableMusicPanel);
 				
 			}
 		});
