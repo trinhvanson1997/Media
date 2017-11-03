@@ -366,7 +366,22 @@ public class DBConnector {
 		}
 	}
 	
-	
+	public String getIDStaff(String username) {
+		conn=getConnection();
+		String id ="";
+		try {
+			rs = stm.executeQuery("SELECT id FROM nhanvien where username='"+username+"';");
+			if(rs.next()) {
+				 id = rs.getString("id");
+				 conn.close();
+				return id;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	
 	/*						CUSTOMER					*/
@@ -588,7 +603,22 @@ return false;
 		}
 	}
 	
-	
+	public String getIDCus(String username) {
+		conn=getConnection();
+		String id ="";
+		try {
+			rs = stm.executeQuery("SELECT id FROM khachhang where username='"+username+"';");
+			if(rs.next()) {
+				 id = rs.getString("id");
+				 conn.close();
+				return id;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	
 	/*						MOVIES				*/
@@ -1214,7 +1244,7 @@ return false;
 				int soluong			= rs2.getInt("soluong");
 				long dongia 		= rs2.getLong("giaban");
 				
-				MuaHang mh = new MuaHang(idhoadon, idsanpham, soluong, dongia);
+				MuaHang mh = new MuaHang( idsanpham, soluong, dongia);
 				listMH.add(mh);
 			}
 			c2.close();
@@ -1230,13 +1260,15 @@ return false;
 
 	}
 	
-	public void insertBill(String idhoadon, String idkhachhang, String idnhanvien, String idsanpham, int soluong,
-			 Timestamp ngaymua) {
+	public void addBill(String idhoadon, String idkhachhang, String idnhanvien,Timestamp date,List<MuaHang> listMH) {
 		conn = getConnection();
 		
 		try {
-			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','"+idnhanvien+"','"+ngaymua+"') ;");
-			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+idsanpham+"' , "+soluong+");");
+			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','"+idnhanvien+"','"+date+"') ;");
+			for(int i=0;i<listMH.size();i++) {
+				System.out.println(listMH.get(i).getIdSanPham());
+			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+listMH.get(i).getIdSanPham()+"' , "+listMH.get(i).getSoLuong()+");");
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1245,7 +1277,30 @@ return false;
 		
 	}
 	
-	
+	public HoaDon getBill(String idHoaDon) {
+		conn = getConnection();
+		HoaDon hd =null;
+		try {
+			rs = stm.executeQuery("SELECT * FROM hoadon where id = '"+idHoaDon+"';");
+			if(rs.next()) {
+				String idhoadon 	= rs.getString("id");
+				String idkhachhang 	= rs.getString("idkhachhang");
+				String idnhanvien 	= rs.getString("idnhanvien");
+				Timestamp ngaymua	= rs.getTimestamp("ngaymua");
+				
+				 hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua, getListMuaHang(idhoadon));
+				conn.close();
+				return hd;
+			}
+		
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 	
 	
 	
@@ -1280,6 +1335,8 @@ return false;
 		}
 		
 	}
+
+
 	
 	
 }

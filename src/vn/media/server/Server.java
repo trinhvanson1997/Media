@@ -3,16 +3,18 @@ package vn.media.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 
 import vn.media.controller.DBConnector;
+import vn.media.view.LoginBox;
 
 public class Server {
 	public ServerSocket serverSocket;
 	public DBConnector db;
+	public LoginBox login;
 	
-	public Server(DBConnector db) {
+	public Server(DBConnector db,LoginBox login) {
 		this.db = db;
+		this.login =login;
 	}
 	
 	public void serve()  {
@@ -22,7 +24,7 @@ public class Server {
 			while(true) {
 				Socket socket = serverSocket.accept();
 				System.out.println("connected");
-				ClientThread thread = new ClientThread(socket,db, this);
+				ClientThread thread = new ClientThread(login,socket,db, this);
 				thread.start();
 				
 			}

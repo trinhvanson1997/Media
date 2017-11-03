@@ -18,6 +18,8 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	private JButton btnSua;
 	private JButton btnXoa;
 	private JButton btnTimKiem;
+	private JButton btnRefresh;
+	
 	private JTextField tfSearch;
 	private TableStaffPanel tablePanel;
 	private String[] s = {"ID","Họ tên","Ngày sinh","Địa chỉ","Số điện thoại","Lương","Username"};
@@ -54,14 +56,15 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	private JPanel createActionPanel() {
 		JPanel panel = new JPanel();
 
-		panel.setLayout(new GridLayout(1, 4, 10, 10));
+		panel.setLayout(new GridLayout(1, 5, 10, 10));
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnThem     = createButtons("THÊM");
 		btnSua      = createButtons("ĐỔI MẬT KHẨU");
 		btnXoa      = createButtons("XÓA");
+		btnRefresh 	= createButtons("REFRESH");
 		
-		
+		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);
 		panel.add(btnThem);
 		panel.add(btnSua);
@@ -81,6 +84,16 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	public JButton getBtnRefresh() {
+		return btnRefresh;
+	}
+
+
+	public void setBtnRefresh(JButton btnRefresh) {
+		this.btnRefresh = btnRefresh;
 	}
 
 

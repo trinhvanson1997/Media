@@ -35,7 +35,7 @@ public class ChoicePanel extends JPanel implements ActionListener{
 		add(btnDonHang);
 		add(btnNhanVien);
 		add(btnThongTin);
-		add(btnDoiMatKhau);
+		//add(btnDoiMatKhau);
 		add(btnDangXuat);
 	}
 	

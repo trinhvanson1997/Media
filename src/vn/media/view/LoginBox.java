@@ -25,6 +25,10 @@ import javax.swing.border.EmptyBorder;
 import vn.media.common.IOFile;
 import vn.media.controller.ChangeTableController;
 import vn.media.controller.DBConnector;
+import vn.media.controller.bill.RefreshBillController;
+import vn.media.controller.bill.SearchBillController;
+import vn.media.controller.bill.SeeBillDetailController;
+import vn.media.controller.bill.ShowAllBillController;
 import vn.media.controller.book.AddBookController;
 import vn.media.controller.book.DeleteBookController;
 import vn.media.controller.book.EditBookController;
@@ -56,7 +60,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 	private JButton btnLogin,btnRegister,btnClose;
 	private DBConnector db;
 	private IOFile ioFile=new IOFile();
-	
+	private 	MainFrame  mainFrame ;
 	public LoginBox(DBConnector db) {
 		this.db=db;
 		
@@ -175,7 +179,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				dispose();
 				System.out.println("you loggin as an administrator");
 				
-				MainFrame  mainFrame = new MainFrame(username,db);
+				  mainFrame = new MainFrame(username,db);
 				 
 				 /*          FUNCTIONS OF STAFF        */
 				 new ShowAllStaffController(mainFrame,db);
@@ -216,6 +220,11 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new DeleteMusicController(mainFrame, db);
 				new EditMusicController(mainFrame, db);
 				
+				new SearchBillController(mainFrame, db);
+				new ShowAllBillController(mainFrame, db);
+				new RefreshBillController(mainFrame, db);
+				new SeeBillDetailController(mainFrame, db);
+
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -229,7 +238,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 			else if(db.checkTypeAcc(username).equals("nhanvien")) {
 					System.out.println("you loggin as a staff");
 				
-				MainFrame  mainFrame = new MainFrame(username,db);
+				  mainFrame = new MainFrame(username,db);
 		
 				 /*			CHANGE MAINPANEL     		*/
 				new ChangeTableController(mainFrame,db);
@@ -263,6 +272,11 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new DeleteMusicController(mainFrame, db);
 				new EditMusicController(mainFrame, db);
 				
+				new SearchBillController(mainFrame, db);
+				new ShowAllBillController(mainFrame, db);
+				new RefreshBillController(mainFrame, db);
+				new SeeBillDetailController(mainFrame, db);
+				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -295,6 +309,14 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public void setMainFrame(MainFrame mainFrame) {
+		this.mainFrame = mainFrame;
 	}
 	
 }

@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="E:/EclispeOxygen/Media/Account.jar"/>
 	<classpathentry kind="lib" path="E:/EclispeOxygen/Media/Nguoi.jar"/>
 	<classpathentry kind="lib" path="E:/EclispeOxygen/Media/KhachHang.jar"/>
+	<classpathentry kind="lib" path="E:/EclispeOxygen/Media/DatHang.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

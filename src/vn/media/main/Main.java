@@ -16,7 +16,7 @@ public class Main {
 		
 		LoginBox login = new LoginBox(db);
 		
-		Server server = new Server(db);
+		Server server = new Server(db,login);
 		server.serve();
 		
 		

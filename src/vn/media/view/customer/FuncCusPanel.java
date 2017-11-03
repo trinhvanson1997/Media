@@ -18,6 +18,7 @@ public class FuncCusPanel extends JPanel implements ActionListener{
 	private JButton btnSua;
 	private JButton btnXoa;
 	private JButton btnTimKiem;
+	private JButton btnRefresh;
 	private JTextField tfSearch;
 	private JComboBox<String> cbType;
 	private String[] s={"ID","Họ tên","Ngày sinh","Địa chỉ","Số điện thoại","Coin","Username"};
@@ -54,11 +55,13 @@ public class FuncCusPanel extends JPanel implements ActionListener{
 	private JPanel createActionPanel() {
 		JPanel panel = new JPanel();
 
-		panel.setLayout(new GridLayout(1, 4, 50, 10));
+		panel.setLayout(new GridLayout(1, 3, 50, 10));
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnSua      = createButtons("ĐỔI MẬT KHẨU");
+btnRefresh 	= createButtons("REFRESH");
 		
+		panel.add(btnRefresh);
 		
 		
 		panel.add(btnXemTatCa);
@@ -85,7 +88,14 @@ public class FuncCusPanel extends JPanel implements ActionListener{
 	public JButton getBtnTimKiem() {
 		return btnTimKiem;
 	}
+	public JButton getBtnRefresh() {
+		return btnRefresh;
+	}
 
+
+	public void setBtnRefresh(JButton btnRefresh) {
+		this.btnRefresh = btnRefresh;
+	}
 	public void setBtnTimKiem(JButton btnTimKiem) {
 		this.btnTimKiem = btnTimKiem;
 	}

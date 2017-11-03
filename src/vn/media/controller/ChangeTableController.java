@@ -23,6 +23,7 @@ import vn.media.view.LoginBox;
 import vn.media.view.MainFrame;
 import vn.media.view.ManagerInfoView;
 import vn.media.view.TabbedProduct;
+import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
 import vn.media.view.book.FuncBookPanel;
 import vn.media.view.book.TableBookPanel;
@@ -44,7 +45,7 @@ public class ChangeTableController {
 	private FuncBookPanel 	funcBookPanel;
 	private FuncMoviesPanel funcMoviesPanel;
 	private FuncMusicPanel 	funcMusicPanel;
-	
+	private FuncBillPanel 	funcBillPanel;
 	
 	private TableStaffPanel 	tableStaffPanel;
 	private TableCusPanel 		tableCusPanel;
@@ -52,7 +53,7 @@ public class ChangeTableController {
 	private TableBookPanel 		tableBookPanel;
 	private TableMoviesPanel 	tableMoviesPanel;
 	private TableMusicPanel 	tableMusicPanel;
-	private TableBillPanel tableBillPanel;
+	private TableBillPanel 		tableBillPanel;
 	
 	private JButton btnStaff;
 	private JButton btnCus;
@@ -82,7 +83,7 @@ public class ChangeTableController {
 		funcBookPanel 	= mainFrame.getFuncBookPanel();
 		funcMoviesPanel = mainFrame.getFuncMoviesPanel();
 		funcMusicPanel 	= mainFrame.getFuncMusicPanel();
-		
+		funcBillPanel 	= mainFrame.getFuncBillPanel();
 		
 		tableBillPanel 	= mainFrame.getTableBillPanel();
 		tableStaffPanel = mainFrame.getTableStaffPanel();
@@ -222,12 +223,11 @@ public class ChangeTableController {
 				tablePanel.repaint();
 				
 				funcPanel.remove(funcPanel.getComponent(0));
-				funcPanel.add(funcCusPanel, BorderLayout.CENTER);
+				funcPanel.add(funcBillPanel, BorderLayout.CENTER);
 				funcPanel.revalidate();
 				funcPanel.repaint();
 				
-				List<HoaDon > list = db.getAllBill();
-				tableBillPanel.updateTable(list);
+				
 			}
 		});
 		

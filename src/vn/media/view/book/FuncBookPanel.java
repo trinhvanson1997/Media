@@ -19,6 +19,7 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 	private JButton btnXemTatCa;
 	private JButton btnThem;
 	private JButton btnSua;
+	private JButton btnRefresh;
 	private JButton btnXoa;
 	private JButton btnTimKiem;
 	private JTextField tfSearch;
@@ -63,12 +64,15 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 
 		panel.setLayout(new GridLayout(1, 4, 10, 10));
 		
+	panel.setLayout(new GridLayout(1, 5, 10, 10));
+		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnThem     = createButtons("THÊM");
-		btnSua      = createButtons("SỬA");
+		btnSua      = createButtons("ĐỔI MẬT KHẨU");
 		btnXoa      = createButtons("XÓA");
+		btnRefresh 	= createButtons("REFRESH");
 		
-		
+		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);
 		panel.add(btnThem);
 		panel.add(btnSua);
@@ -94,7 +98,14 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 	public JButton getBtnXemTatCa() {
 		return btnXemTatCa;
 	}
+	public JButton getBtnRefresh() {
+		return btnRefresh;
+	}
 
+
+	public void setBtnRefresh(JButton btnRefresh) {
+		this.btnRefresh = btnRefresh;
+	}
 
 	public void setBtnXemTatCa(JButton btnXemTatCa) {
 		this.btnXemTatCa = btnXemTatCa;

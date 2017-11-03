@@ -6,34 +6,41 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
+import vn.media.common.IOFile;
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
 import vn.media.models.DiaPhim;
 import vn.media.models.KhachHang;
+import vn.media.models.MuaHang;
 import vn.media.models.Sach;
 import vn.media.models.SanPham;
+import vn.media.view.LoginBox;
 
 public class ClientThread extends Thread{
 	public static final int LOGIN=1,LOGIN_SUCCESS=2,LOGIN_FAIL=3,GET_ALL_BOOK=4,GET_ALL_MOVIE=5
 			,GET_ALL_MUSIC=6,GET_CUSTOMER_NAME=7,GET_COIN_CUS=8,GET_SLTK=9,UPDATE_COIN=10
 					,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
 					,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
-							,ADD_CUSTOMER=17,CLOSE_REQUEST=18;
+							,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19;
 	public Socket socket;
 	public Server server;
 	public DBConnector db;
+	public LoginBox login;
 	
 	public DataInputStream in;
 	public DataOutputStream out;
 	public ObjectInputStream ois;
 	public ObjectOutputStream oos;
 	
-	public ClientThread(Socket socket,DBConnector db,Server server)  {
+	public ClientThread(LoginBox login,Socket socket,DBConnector db,Server server)  {
 		this.socket=socket;
 		this.server=server;
 		this.db = db;
+		this.login = login;
 		
 		try {
 			in = new DataInputStream(this.socket.getInputStream());
@@ -163,13 +170,14 @@ public class ClientThread extends Thread{
 				}
 				else if(stt == ADD_CUSTOMER) {
 					KhachHang kh = (KhachHang) ois.readObject();
-					SanPham sp = new SanPham();
 					
-					if(db.addCus("KH"+sp.indexOfCus, kh.getHoTen(),
+					
+					if(db.addCus("KH"+new SanPham().indexOfCus, kh.getHoTen(),
 							kh.getNgaySinh(), kh.getDiaChi(), kh.getsDT(), kh.getCoin(), 
 							kh.getUsername(), kh.getPassword())) {
-						sp.indexOfCus++;
-						out.writeBoolean(true);
+						new SanPham().indexOfCus++;
+						new IOFile().writeFile()
+;						out.writeBoolean(true);
 						out.flush();
 					}
 					else {
@@ -181,7 +189,22 @@ public class ClientThread extends Thread{
 					socket.close();
 					this.stop();
 				}
-				
+				else if(stt == ORDER_REQUEST) {
+					
+					String idkhachhang = in.readUTF();
+					
+					List<MuaHang> listMH = (List<MuaHang>) ois.readObject();
+					
+					String idnhanvien = login.getMainFrame().id;
+					String idhoadon = "HD"+new SanPham().indexOfBill;
+					
+					Timestamp date = new Timestamp(new Date().getTime());
+					db.addBill(idhoadon, idkhachhang, idnhanvien, date, listMH);
+					
+					new SanPham().indexOfBill++;
+					new IOFile().writeFile();
+					
+				}
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

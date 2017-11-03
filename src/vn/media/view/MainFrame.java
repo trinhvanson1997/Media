@@ -1,6 +1,8 @@
 package vn.media.view;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -9,9 +11,11 @@ import javax.swing.JPanel;
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
 import vn.media.models.DiaPhim;
+import vn.media.models.HoaDon;
 import vn.media.models.KhachHang;
 import vn.media.models.NhanVien;
 import vn.media.models.Sach;
+import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
 import vn.media.view.book.FuncBookPanel;
 import vn.media.view.customer.FuncCusPanel;
@@ -21,145 +25,204 @@ import vn.media.view.music.FuncMusicPanel;
 import vn.media.view.staff.FuncStaffPanel;
 import vn.media.view.staff.TableStaffPanel;
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame {
 	private TopInfoPanel topInfoPanel;
-	private ChoicePanel  choicePanel;
-	
+	private ChoicePanel choicePanel;
+
 	private List<Sach> listBook;
 	private List<DiaPhim> listMovie;
 	private List<DiaNhac> listMusic;
-	
+
 	private List<NhanVien> listStaff;
 	private List<KhachHang> listCus;
+
+	private List<HoaDon> listBill;
 	
-	private TableStaffPanel   tableStaffPanel;
+	private TableStaffPanel tableStaffPanel;
 	private TableCusPanel tableCusPanel;
 	private TableBillPanel tableBillPanel;
-	
+
 	private FuncCusPanel funcCusPanel;
-	private FuncStaffPanel    funcStaffPanel;
+	private FuncStaffPanel funcStaffPanel;
 	private FuncBookPanel funcBookPanel;
 	private FuncMoviesPanel funcMoviesPanel;
 	private FuncMusicPanel funcMusicPanel;
-	
+private FuncBillPanel funcBillPanel;
 	private TabbedProduct tabbedProduct;
-	
+
 	private MenuBarView menuBarView;
-	
+
 	private JPanel mainPanel;
 	private JPanel tablePanel;
 	private JPanel funcPanel;
-	private DBConnector  db;
+	private DBConnector db;
+	public String id;
+	public String username;
 	
-	public MainFrame(String username,DBConnector db) {
-		this.db=db;
+	public MainFrame(String username, DBConnector db) {
+		this.db = db;
+		this.username =username;
+		
+		NhanVien nv = db.getStaff(username);
+		this.id = nv.getId();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1000,600);
+		setSize(1000, 600);
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
 		setTitle("MediaOne (Server)");
-		
+
 		setResizable(true);
-		/* 			NORTH MAINFRAME			*/
-		topInfoPanel 	= new TopInfoPanel(username, db);
-		
-		/*			WEST MAINFRAME			*/
-		choicePanel  = new ChoicePanel();
-		
-		/*			PANELS OF STAFFS			*/
-		tableStaffPanel   = new TableStaffPanel();
-		funcStaffPanel    = new FuncStaffPanel();
-		
-		/*			PANELS OF CUSTOMERS		*/
-		tableCusPanel	= new TableCusPanel();
-		funcCusPanel 	= new FuncCusPanel();
-		
-		/*			PANELS OF PRODUCTS		*/
-		tabbedProduct	 = new TabbedProduct();
-		
-		/*			PANELS OF BOOKS		*/
-		
-		funcBookPanel 	 = new FuncBookPanel();
-		
-		
-		/*			PANELS OF MOVIES		*/
-	
-		funcMoviesPanel 	= new FuncMoviesPanel();
-		
-		
-		/*			PANELS OF MUSICS		*/
-		
-		funcMusicPanel 		= new FuncMusicPanel();
-		
-		
+		/* NORTH MAINFRAME */
+		topInfoPanel = new TopInfoPanel(username, db);
+
+		/* WEST MAINFRAME */
+		choicePanel = new ChoicePanel();
+
+		/* PANELS OF STAFFS */
+		tableStaffPanel = new TableStaffPanel();
+		funcStaffPanel = new FuncStaffPanel();
+
+		/* PANELS OF CUSTOMERS */
+		tableCusPanel = new TableCusPanel();
+		funcCusPanel = new FuncCusPanel();
+
+		/* PANELS OF PRODUCTS */
+		tabbedProduct = new TabbedProduct();
+
+		/* PANELS OF BOOKS */
+
+		funcBookPanel = new FuncBookPanel();
+
+		/* PANELS OF MOVIES */
+
+		funcMoviesPanel = new FuncMoviesPanel();
+
+		/* PANELS OF MUSICS */
+
+		funcMusicPanel = new FuncMusicPanel();
+		funcBillPanel = new FuncBillPanel();
 		tableBillPanel = new TableBillPanel();
-		
-		
-		/*			MENU PANEL				*/
+
+		/* MENU PANEL */
 		menuBarView = new MenuBarView();
-		
+
 		setJMenuBar(menuBarView);
-		
-		add(topInfoPanel,BorderLayout.NORTH);
-		add(choicePanel,BorderLayout.WEST);
-		add(createMainPanel(),BorderLayout.CENTER);
-		
+
+		add(topInfoPanel, BorderLayout.NORTH);
+		add(choicePanel, BorderLayout.WEST);
+		add(createMainPanel(), BorderLayout.CENTER);
+
 		listBook = db.getAllBook();
 		listMovie = db.getAllMovies();
 		listMusic = db.getAllMusic();
-		
+
 		listStaff = db.getAllStaff();
 		listCus = db.getAllCus();
+
+		listBill = db.getAllBill();
 		
 		initTableProduct();
 		initTableStaff();
 		initTableCus();
-	
+		initRefresh();
+		initTableBill();
+		
 		setVisible(true);
 	}
-	
+
 	public void initTableStaff() {
 		tableStaffPanel.updateTable(listStaff);
-		
+
 	}
-	
+
 	public void initTableCus() {
 		tableCusPanel.updateTable(listCus);
 	}
 
 	private JPanel createMainPanel() {
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout(20,20));
-		
+		mainPanel.setLayout(new BorderLayout(20, 20));
+
 		tablePanel = new JPanel();
 		tablePanel.setLayout(new BorderLayout());
 		tablePanel.add(tabbedProduct, BorderLayout.CENTER);
-		
+
 		funcPanel = new JPanel();
 		funcPanel.setLayout(new BorderLayout());
 		funcPanel.add(funcBookPanel, BorderLayout.CENTER);
-		
-		mainPanel.add(tablePanel,BorderLayout.CENTER);
-		mainPanel.add(funcPanel,BorderLayout.SOUTH);
-		
+
+		mainPanel.add(tablePanel, BorderLayout.CENTER);
+		mainPanel.add(funcPanel, BorderLayout.SOUTH);
+
 		return mainPanel;
 	}
 
-	
 	public void initTableProduct() {
 		tabbedProduct.getTableBookPanel().updateTable(listBook);
 		tabbedProduct.getTableMoviesPanel().updateTable(listMovie);
 		tabbedProduct.getTableMusicPanel().updateTable(listMusic);
-		
-		
+
+	}
+
+	public void initTableBill() {
+		tableBillPanel.updateTable(listBill);
 	}
 	
-	
-	
-	
-	
-	
+	public void initRefresh() {
+		funcStaffPanel.getBtnRefresh().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<NhanVien> list = db.getAllStaff();
+				tableStaffPanel.updateTable(list);
+				listStaff = list;
+
+			}
+		});
+
+		funcCusPanel.getBtnRefresh().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<KhachHang> list = db.getAllCus();
+				tableCusPanel.updateTable(list);
+				listCus = list;
+			}
+		});
+
+		funcBookPanel.getBtnRefresh().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<Sach> list = db.getAllBook();
+				tabbedProduct.getTableBookPanel().updateTable(list);
+				listBook = list;
+			}
+		});
+
+		funcMoviesPanel.getBtnRefresh().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<DiaPhim> list = db.getAllMovies();
+				tabbedProduct.getTableMoviesPanel().updateTable(list);
+				listMovie = list;
+
+			}
+		});
+		
+		funcMusicPanel.getBtnRefresh().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			List<DiaNhac> list = db.getAllMusic();
+			tabbedProduct.getTableMusicPanel().updateTable(list);
+			listMusic = list;
+			}
+		});
+	}
+
 	public TableBillPanel getTableBillPanel() {
 		return tableBillPanel;
 	}
@@ -216,29 +279,25 @@ public class MainFrame extends JFrame{
 		return tableCusPanel;
 	}
 
-
 	public void setTableCusPanel(TableCusPanel tableCusPanel) {
 		this.tableCusPanel = tableCusPanel;
 	}
-
 
 	public FuncCusPanel getFuncCusPanel() {
 		return funcCusPanel;
 	}
 
-
 	public void setFuncCusPanel(FuncCusPanel funcCusPanel) {
 		this.funcCusPanel = funcCusPanel;
 	}
+
 	public TopInfoPanel getTopInfoPanel() {
 		return topInfoPanel;
 	}
 
-
 	public void setTopInfoPanel(TopInfoPanel topInfoPanel) {
 		this.topInfoPanel = topInfoPanel;
 	}
-
 
 	public TabbedProduct getTabbedProduct() {
 		return tabbedProduct;
@@ -252,32 +311,25 @@ public class MainFrame extends JFrame{
 		return choicePanel;
 	}
 
-
 	public void setChoicePanel(ChoicePanel choicePanel) {
 		this.choicePanel = choicePanel;
 	}
-
 
 	public FuncStaffPanel getFuncStaffPanel() {
 		return funcStaffPanel;
 	}
 
-
 	public void setFuncStaffPanel(FuncStaffPanel funcStaffPanel) {
 		this.funcStaffPanel = funcStaffPanel;
 	}
-
 
 	public TableStaffPanel getTableStaffPanel() {
 		return tableStaffPanel;
 	}
 
-
 	public void setTableStaffPanel(TableStaffPanel tableStaffPanel) {
 		this.tableStaffPanel = tableStaffPanel;
 	}
-
-
 
 	public FuncBookPanel getFuncBookPanel() {
 		return funcBookPanel;
@@ -289,6 +341,14 @@ public class MainFrame extends JFrame{
 
 	public FuncMoviesPanel getFuncMoviesPanel() {
 		return funcMoviesPanel;
+	}
+
+	public FuncBillPanel getFuncBillPanel() {
+		return funcBillPanel;
+	}
+
+	public void setFuncBillPanel(FuncBillPanel funcBillPanel) {
+		this.funcBillPanel = funcBillPanel;
 	}
 
 	public void setFuncmoviesPanel(FuncMoviesPanel funcMoviesPanel) {
@@ -342,7 +402,13 @@ public class MainFrame extends JFrame{
 	public void setListCus(List<KhachHang> listCus) {
 		this.listCus = listCus;
 	}
-	
-	
+
+	public List<HoaDon> getListBill() {
+		return listBill;
+	}
+
+	public void setListBill(List<HoaDon> listBill) {
+		this.listBill = listBill;
+	}
 
 }
