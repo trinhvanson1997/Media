@@ -65,7 +65,7 @@ public class FuncMusicPanel extends JPanel implements ActionListener{
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnThem     = createButtons("THÊM");
-		btnSua      = createButtons("ĐỔI MẬT KHẨU");
+		btnSua      = createButtons("SỬA");
 		btnXoa      = createButtons("XÓA");
 		btnRefresh 	= createButtons("REFRESH");
 		

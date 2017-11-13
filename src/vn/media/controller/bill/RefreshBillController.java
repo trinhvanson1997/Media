@@ -23,7 +23,7 @@ public class RefreshBillController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<HoaDon> list = db.getAllBill();
+				List<HoaDon> list = db.getAllBill(mainFrame.getPageBill());
 				tableBillPanel.updateTable(list);
 				mainFrame.setListBill(list);
 				

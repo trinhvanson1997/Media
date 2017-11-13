@@ -141,7 +141,7 @@ public class EditBookView extends JDialog implements ActionListener{
 					db.editBook(sach);
 					dispose();
 					
-					List<Sach> list = db.getAllBook();
+					List<Sach> list = db.getAllBook(mainFrame.getPageBook());
 					tableBookPanel.updateTable(list);
 					mainFrame.setListBook(list);
 					JOptionPane.showMessageDialog(null, "Sửa sách thành công");

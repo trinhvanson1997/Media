@@ -18,12 +18,15 @@ import vn.media.models.Sach;
 import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
 import vn.media.view.book.FuncBookPanel;
+import vn.media.view.book.TableBookPanel;
 import vn.media.view.customer.FuncCusPanel;
 import vn.media.view.customer.TableCusPanel;
 import vn.media.view.movies.FuncMoviesPanel;
 import vn.media.view.music.FuncMusicPanel;
 import vn.media.view.staff.FuncStaffPanel;
 import vn.media.view.staff.TableStaffPanel;
+import vn.media.view.wait.FuncWaitPanel;
+import vn.media.view.wait.TableWaitPanel;
 
 public class MainFrame extends JFrame {
 	private TopInfoPanel topInfoPanel;
@@ -37,16 +40,22 @@ public class MainFrame extends JFrame {
 	private List<KhachHang> listCus;
 
 	private List<HoaDon> listBill;
+	private List<HoaDon> listWait;
 	
 	private TableStaffPanel tableStaffPanel;
 	private TableCusPanel tableCusPanel;
 	private TableBillPanel tableBillPanel;
-
+	private TableWaitPanel tableWaitPanel;
+	
 	private FuncCusPanel funcCusPanel;
 	private FuncStaffPanel funcStaffPanel;
 	private FuncBookPanel funcBookPanel;
 	private FuncMoviesPanel funcMoviesPanel;
 	private FuncMusicPanel funcMusicPanel;
+	private FuncWaitPanel funcWaitPanel;
+	
+
+
 private FuncBillPanel funcBillPanel;
 	private TabbedProduct tabbedProduct;
 
@@ -58,6 +67,33 @@ private FuncBillPanel funcBillPanel;
 	private DBConnector db;
 	public String id;
 	public String username;
+	
+	private int pageStaff;
+	private int pageCus;
+	private int pageBill;
+	private int pageWait;
+	
+	
+
+	private int pageBook;
+	private int pageMovies;
+	private int pageMusic;
+	
+	
+	
+	
+	
+	public String tensach[] = {"Tiếng việt","Xác suất thống kê","Tiếng anh chuyên ngành","Giáo dục công dân","Công nghệ",
+			"Tin đại cương","Giải tích 1","Giải tích 2","Giải tích 3","Hóa học","Pháp luật đại cương","Chính trị học","Đường lối cách mạng"
+			,"Trí tuệ nhân tạo","Cơ sở dữ liệ","Toán cao cấp","AI","An toàn bảo mật thông tin"
+			,"CSDL nâng cao","Học máy","Nhập môn CNPM","Lý 1","Tiếng anh chuyên ngành"};
+	
+	public String nxb[] = {"Thống kê","Lao động xã hội","Chính trị Quốc gia","Thế giới","Quân đội nhân dân","Y học","Văn Hoá thông tin",
+			"Thông tấn","Khoa học và kỹ thuật","Y học và thể dục thể thao","Kim đồng","Bách khoa","Tuổi trẻ","Kinh tế"};
+	
+	public String[] tacgia = {"Jack ma","Hoàng Thúy Long","Nguyễn Chung Chính","Đặng Đức Trạch","Đặng Văn Ngữ","Nguyễn Đình Hường","Phạm Mạnh Hùng","Vũ Quang Bích","Đỗ Nguyên Phương","Nam Cao","Hamminton",
+			"Phùng Đắc Cam","Nguyễn Kim Giao","Tạ Văn Bĩnh","Lê Đăng Hà","Nguyễn Hữu Tâm","Lê Minh Triết","Vũ Bình Minh","Bùi Văn A"};
+	
 	
 	public MainFrame(String username, DBConnector db) {
 		this.db = db;
@@ -103,32 +139,59 @@ private FuncBillPanel funcBillPanel;
 		funcMusicPanel = new FuncMusicPanel();
 		funcBillPanel = new FuncBillPanel();
 		tableBillPanel = new TableBillPanel();
-
+		
+		
+		funcWaitPanel = new FuncWaitPanel();
+		tableWaitPanel = new TableWaitPanel();
 		/* MENU PANEL */
 		menuBarView = new MenuBarView();
 
-		setJMenuBar(menuBarView);
+		//setJMenuBar(menuBarView);
 
+		
+		pageStaff = tableStaffPanel.getCurrentPage();
+		pageCus   = tableCusPanel.getCurrentPage();
+		pageBook  = tabbedProduct.getTableBookPanel().getCurrentPage();
+		pageMovies = tabbedProduct.getTableMoviesPanel().getCurrentPage();
+		pageMusic = tabbedProduct.getTableMusicPanel().getCurrentPage();
+		
+		
+		
 		add(topInfoPanel, BorderLayout.NORTH);
 		add(choicePanel, BorderLayout.WEST);
 		add(createMainPanel(), BorderLayout.CENTER);
 
-		listBook = db.getAllBook();
-		listMovie = db.getAllMovies();
-		listMusic = db.getAllMusic();
+		listBook = db.getAllBook(0);
+		pageBook =0;
+		
+		listMovie = db.getAllMovies(0);
+		pageMovies =0;
+		
+		listMusic = db.getAllMusic(0);
+		pageMusic =0;
+		
+		listStaff = db.getAllStaff(0);
+		pageStaff = 0;
+		
+		
+		listCus = db.getAllCus(0);
+		pageCus =0;
+		
+		listBill = db.getAllBill(0);
+		pageBill =0;
+		
+		listWait = db.getAllWait(0);
+		pageWait = 0;
 
-		listStaff = db.getAllStaff();
-		listCus = db.getAllCus();
-
-		listBill = db.getAllBill();
 		
 		initTableProduct();
 		initTableStaff();
 		initTableCus();
 		initRefresh();
 		initTableBill();
-		
+		initTableWait();
 		setVisible(true);
+		
 	}
 
 	public void initTableStaff() {
@@ -169,12 +232,15 @@ private FuncBillPanel funcBillPanel;
 		tableBillPanel.updateTable(listBill);
 	}
 	
+	public void initTableWait() {
+		tableWaitPanel.updateTable(listWait);
+	}
 	public void initRefresh() {
 		funcStaffPanel.getBtnRefresh().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<NhanVien> list = db.getAllStaff();
+				List<NhanVien> list = db.getAllStaff(pageStaff);
 				tableStaffPanel.updateTable(list);
 				listStaff = list;
 
@@ -185,7 +251,7 @@ private FuncBillPanel funcBillPanel;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<KhachHang> list = db.getAllCus();
+				List<KhachHang> list = db.getAllCus(pageCus);
 				tableCusPanel.updateTable(list);
 				listCus = list;
 			}
@@ -195,7 +261,7 @@ private FuncBillPanel funcBillPanel;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<Sach> list = db.getAllBook();
+				List<Sach> list = db.getAllBook(pageBook);
 				tabbedProduct.getTableBookPanel().updateTable(list);
 				listBook = list;
 			}
@@ -205,7 +271,7 @@ private FuncBillPanel funcBillPanel;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<DiaPhim> list = db.getAllMovies();
+				List<DiaPhim> list = db.getAllMovies(pageMovies);
 				tabbedProduct.getTableMoviesPanel().updateTable(list);
 				listMovie = list;
 
@@ -216,7 +282,7 @@ private FuncBillPanel funcBillPanel;
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			List<DiaNhac> list = db.getAllMusic();
+			List<DiaNhac> list = db.getAllMusic(pageMusic);
 			tabbedProduct.getTableMusicPanel().updateTable(list);
 			listMusic = list;
 			}
@@ -298,7 +364,21 @@ private FuncBillPanel funcBillPanel;
 	public void setTopInfoPanel(TopInfoPanel topInfoPanel) {
 		this.topInfoPanel = topInfoPanel;
 	}
+	public TableWaitPanel getTableWaitPanel() {
+		return tableWaitPanel;
+	}
 
+	public void setTableWaitPanel(TableWaitPanel tableWaitPanel) {
+		this.tableWaitPanel = tableWaitPanel;
+	}
+
+	public FuncWaitPanel getFuncWaitPanel() {
+		return funcWaitPanel;
+	}
+
+	public void setFuncWaitPanel(FuncWaitPanel funcWaitPanel) {
+		this.funcWaitPanel = funcWaitPanel;
+	}
 	public TabbedProduct getTabbedProduct() {
 		return tabbedProduct;
 	}
@@ -329,6 +409,30 @@ private FuncBillPanel funcBillPanel;
 
 	public void setTableStaffPanel(TableStaffPanel tableStaffPanel) {
 		this.tableStaffPanel = tableStaffPanel;
+	}
+
+	public int getPageStaff() {
+		return pageStaff;
+	}
+
+	public void setPageStaff(int pageStaff) {
+		this.pageStaff = pageStaff;
+	}
+
+	public int getPageCus() {
+		return pageCus;
+	}
+
+	public void setPageCus(int pageCus) {
+		this.pageCus = pageCus;
+	}
+
+	public int getPageBill() {
+		return pageBill;
+	}
+
+	public void setPageBill(int pageBill) {
+		this.pageBill = pageBill;
 	}
 
 	public FuncBookPanel getFuncBookPanel() {
@@ -373,6 +477,44 @@ private FuncBillPanel funcBillPanel;
 
 	public List<DiaPhim> getListMovie() {
 		return listMovie;
+	}
+
+	public int getPageBook() {
+		return pageBook;
+	}
+
+	public void setPageBook(int pageBook) {
+		this.pageBook = pageBook;
+	}
+	public List<HoaDon> getListWait() {
+		return listWait;
+	}
+
+	public void setListWait(List<HoaDon> listWait) {
+		this.listWait = listWait;
+	}
+
+	public int getPageWait() {
+		return pageWait;
+	}
+
+	public void setPageWait(int pageWait) {
+		this.pageWait = pageWait;
+	}
+	public int getPageMovies() {
+		return pageMovies;
+	}
+
+	public void setPageMovies(int pageMovies) {
+		this.pageMovies = pageMovies;
+	}
+
+	public int getPageMusic() {
+		return pageMusic;
+	}
+
+	public void setPageMusic(int pageMusic) {
+		this.pageMusic = pageMusic;
 	}
 
 	public void setListMovie(List<DiaPhim> listMovie) {

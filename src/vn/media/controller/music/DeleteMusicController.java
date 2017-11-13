@@ -31,7 +31,7 @@ public class DeleteMusicController {
 					int click =JOptionPane.showConfirmDialog(tableMusicPanel, "Bạn muốn xóa dĩa nhạc mã '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
 					if(JOptionPane.YES_OPTION==click) {
 					
-						List<DiaNhac> list = db.getAllMusic();
+						List<DiaNhac> list = mainFrame.getListMusic();
 						for(int i=0;i<list.size();i++) {
 							if(list.get(i).getId().equals(id)) {
 								list.remove(i);

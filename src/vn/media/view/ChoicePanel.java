@@ -13,10 +13,11 @@ public class ChoicePanel extends JPanel implements ActionListener{
 	private JButton btnNhanVien;
 	private JButton btnKhachHang;
 	private JButton btnSanPham;
-	private JButton btnDonHang;
+	private JButton btnHoaDon;
 	private JButton btnDangXuat;
 	private JButton btnThongTin;
 	private JButton btnDoiMatKhau;
+	private JButton btnDonHang;
 	
 	public ChoicePanel() {
 		setLayout(new GridLayout(8, 1, 10, 10));
@@ -25,17 +26,19 @@ public class ChoicePanel extends JPanel implements ActionListener{
 		btnNhanVien  =  createButtons("NHÂN VIÊN");
 		btnKhachHang =  createButtons("KHÁCH HÀNG");
 		btnSanPham   =  createButtons("SẢN PHẨM");
-		btnDonHang   =  createButtons("ĐƠN HÀNG");
+		btnHoaDon   =  createButtons("HÓA ĐƠN");
 		btnDangXuat  =  createButtons("ĐĂNG XUẤT");
 		btnDoiMatKhau = createButtons("ĐỔI MẬT KHẨU");
 		btnThongTin = createButtons("THÔNG TIN TK");
+		btnDonHang	= createButtons("ĐƠN HÀNG");
 		
 		add(btnSanPham);
-		add(btnKhachHang);
+		add(btnHoaDon);
 		add(btnDonHang);
+		add(btnKhachHang);
 		add(btnNhanVien);
 		add(btnThongTin);
-		//add(btnDoiMatKhau);
+		
 		add(btnDangXuat);
 	}
 	
@@ -69,12 +72,12 @@ public class ChoicePanel extends JPanel implements ActionListener{
 		this.btnSanPham = btnSanPham;
 	}
 
-	public JButton getBtnThongKe() {
-		return btnDonHang;
+	public JButton getBtnHoaDon() {
+		return btnHoaDon;
 	}
 
-	public void setBtnThongKe(JButton btnThongKe) {
-		this.btnDonHang = btnThongKe;
+	public void setBtnHoaDon(JButton btnHoaDon) {
+		this.btnHoaDon = btnHoaDon;
 	}
 
 	public JButton getBtnDangXuat() {
@@ -83,12 +86,6 @@ public class ChoicePanel extends JPanel implements ActionListener{
 
 	public void setBtnDangXuat(JButton btnDangXuat) {
 		this.btnDangXuat = btnDangXuat;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public JButton getBtnThongTin() {
@@ -106,6 +103,23 @@ public class ChoicePanel extends JPanel implements ActionListener{
 	public void setBtnDoiMatKhau(JButton btnDoiMatKhau) {
 		this.btnDoiMatKhau = btnDoiMatKhau;
 	}
+
+	public JButton getBtnDonHang() {
+		return btnDonHang;
+	}
+
+	public void setBtnDonHang(JButton btnDonHang) {
+		this.btnDonHang = btnDonHang;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 	
 }

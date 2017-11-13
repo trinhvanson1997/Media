@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -34,6 +35,7 @@ public class EditMoviesView extends JDialog implements ActionListener{
 	private TableMoviesPanel tableMoviesPanel;
 	private DiaPhim diaphim;
 	private MainFrame mainFrame;
+	Timestamp date = new Timestamp(new Date().getTime());
 	public EditMoviesView(MainFrame mainFrame,DBConnector db, TableMoviesPanel tableMoviesPanel,DiaPhim diaphim) {
 		this.db = db;
 		this.tableMoviesPanel=tableMoviesPanel;
@@ -128,7 +130,7 @@ public class EditMoviesView extends JDialog implements ActionListener{
 					int soluong 	= Integer.parseInt(tfSoLuong.getText());
 					long giamua 	= Long.parseLong(tfGiaMua.getText());
 					long giaban 	= Long.parseLong(tfGiaBan.getText());
-					Timestamp date 		= diaphim.getNgayNhapHangCuoi();
+					//Timestamp date 		= diaphim.getNgayNhapHangCuoi();
 					String daodien 		= tfDaoDien.getText();
 					List<String> dienvien = convertStringToList(tfDienVien.getText());
 					
@@ -139,7 +141,7 @@ public class EditMoviesView extends JDialog implements ActionListener{
 					
 					dispose();
 					
-					List<DiaPhim> list = db.getAllMovies();
+					List<DiaPhim> list = db.getAllMovies(mainFrame.getPageMovies());
 					tableMoviesPanel.updateTable(list);
 					mainFrame.setListMovie(list);
 					JOptionPane.showMessageDialog(null, "Sửa đĩa phim thành công");

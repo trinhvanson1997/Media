@@ -1,4 +1,4 @@
-package vn.media.view.bill;
+package vn.media.view.wait;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -17,17 +17,16 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import vn.media.models.HoaDon;
-import vn.media.models.MuaHang;
 
-public class TableBillPanel extends JPanel implements ActionListener {
+public class TableWaitPanel extends JPanel implements ActionListener {
 	private JTable table;
 	private JLabel lbName;
 	private JScrollPane scroll;
 	private JButton btnTrangTruoc,btnTrangSau;
-	private String[] columns = { "Mã hóa đơn", "Mã khách hàng", "Mã nhân viên","Ngày đặt hàng","Ngày xử lý" };
+	private String[] columns = { "Mã hóa đơn", "Mã khách hàng","Ngày đặt hàng", "Trạng thái"};
 	private int currentPage;
 	
-	public TableBillPanel() {
+	public TableWaitPanel() {
 		setLayout(new BorderLayout(10, 0));
 
 		JPanel panel = new JPanel();
@@ -52,7 +51,7 @@ public class TableBillPanel extends JPanel implements ActionListener {
 		panel.setLayout(new BorderLayout());
 		panel.setBorder(BorderFactory.createTitledBorder(""));
 		// create label
-		lbName = new JLabel("DANH SÁCH HÓA ĐƠN");
+		lbName = new JLabel("DANH SÁCH ĐƠN HÀNG");
 		lbName.setHorizontalAlignment(JLabel.CENTER);
 		panel.add(lbName, BorderLayout.CENTER);
 
@@ -98,9 +97,9 @@ public class TableBillPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < list.size(); i++) {
 				data[i][0] = list.get(i).getId();
 				data[i][1] = list.get(i).getIdKhachHang();
-				data[i][2] = list.get(i).getIdNhanVien();
-				data[i][3] = new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(list.get(i).getNgayMuaHang());
-				data[i][4] = new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(list.get(i).getNgayXuLy());
+				data[i][2] = new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(list.get(i).getNgayMuaHang());
+				data[i][3] = "Đang xử lý";
+			
 			
 		}
 

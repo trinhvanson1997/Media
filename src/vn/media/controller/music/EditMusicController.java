@@ -32,7 +32,7 @@ public class EditMusicController {
 					String id = tableMusicPanel.getTable().getModel().getValueAt(index, 0).toString();
 
 					DiaNhac dianhac = db.getMusic(id);
-					new EditMusicView(db, tableMusicPanel, dianhac);
+					new EditMusicView(mainFrame,db, tableMusicPanel, dianhac);
 				} else {
 
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn sách cần sửa !", "Thông báo",

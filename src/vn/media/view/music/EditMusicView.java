@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
+import vn.media.view.MainFrame;
 
 public class EditMusicView extends JDialog implements ActionListener{
 	private static final int WARNING_MESSAGE = 0;
@@ -32,10 +34,14 @@ public class EditMusicView extends JDialog implements ActionListener{
 	private DBConnector db;
 	private TableMusicPanel tableMusicPanel;
 	private DiaNhac dianhac;
-	public EditMusicView(DBConnector db, TableMusicPanel tableMusicPanel, DiaNhac dianhac) {
+	private MainFrame mainFrame;
+	Timestamp date = new Timestamp(new Date().getTime());
+	
+	public EditMusicView(MainFrame mainFrame,DBConnector db, TableMusicPanel tableMusicPanel, DiaNhac dianhac) {
 		this.db = db;
 		this.tableMusicPanel=tableMusicPanel;
 		this.dianhac = dianhac;
+		this.mainFrame = mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -131,7 +137,7 @@ public class EditMusicView extends JDialog implements ActionListener{
 					int soluong 	= Integer.parseInt(tfSoLuong.getText());
 					long giamua 	= Long.parseLong(tfGiaMua.getText());
 					long giaban 	= Long.parseLong(tfGiaBan.getText());
-					Timestamp date 		= dianhac.getNgayNhapHangCuoi();
+					//Timestamp date 		= dianhac.getNgayNhapHangCuoi();
 					String theloai 		= tfTheLoai.getText();
 					List<String> casi = convertStringToList(tfCaSi.getText());
 					
@@ -147,7 +153,7 @@ public class EditMusicView extends JDialog implements ActionListener{
 					
 					dispose();
 					
-					List<DiaNhac> list = db.getAllMusic();
+					List<DiaNhac> list = db.getAllMusic(mainFrame.getPageMusic());
 					tableMusicPanel.updateTable(list);
 					
 					JOptionPane.showMessageDialog(null, "Sửa thông tin thành công");

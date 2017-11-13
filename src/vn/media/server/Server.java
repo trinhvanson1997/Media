@@ -20,10 +20,12 @@ public class Server {
 	public void serve()  {
 		try {
 			serverSocket = new ServerSocket(2000);
+		
 			System.out.println("Server is ready!");
 			while(true) {
 				Socket socket = serverSocket.accept();
 				System.out.println("connected");
+				
 				ClientThread thread = new ClientThread(login,socket,db, this);
 				thread.start();
 				

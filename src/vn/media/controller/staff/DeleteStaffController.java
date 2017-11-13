@@ -25,7 +25,7 @@ public class DeleteStaffController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = tableStaffPanel.getTable().getSelectedRow();
-				if(index >=0) {
+				if(index >0) {
 					String id = tableStaffPanel.getTable().getModel().getValueAt(index, 0).toString();
 					int click = JOptionPane.showConfirmDialog(tableStaffPanel, "Bạn muốn xóa nhân viên '"+id+"'?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
 					if(JOptionPane.YES_OPTION==click) {
@@ -46,6 +46,9 @@ public class DeleteStaffController {
 						return;
 					
 					}
+				}
+				else if(index == 0) {
+					JOptionPane.showMessageDialog(null, "Không được xóa người này!","Thông báo",JOptionPane.WARNING_MESSAGE);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần xóa !","Thông báo",JOptionPane.WARNING_MESSAGE);

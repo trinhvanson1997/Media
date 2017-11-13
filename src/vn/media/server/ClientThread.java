@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class ClientThread extends Thread{
 			,GET_ALL_MUSIC=6,GET_CUSTOMER_NAME=7,GET_COIN_CUS=8,GET_SLTK=9,UPDATE_COIN=10
 					,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
 					,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
-							,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19;
+							,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19
+							,COUNT_BOOK=20,COUNT_MOVIE=21,COUNT_MUSIC=22;
 	public Socket socket;
 	public Server server;
 	public DBConnector db;
@@ -36,6 +38,7 @@ public class ClientThread extends Thread{
 	public ObjectInputStream ois;
 	public ObjectOutputStream oos;
 	
+
 	public ClientThread(LoginBox login,Socket socket,DBConnector db,Server server)  {
 		this.socket=socket;
 		this.server=server;
@@ -57,28 +60,34 @@ public class ClientThread extends Thread{
 	public void run() {
 		while(true) {
 			try {
-				int stt=in.read();
+				int stt=in.readInt();
 				
 				if(stt==LOGIN) {
 					String username = in.readUTF();
 					String password = in.readUTF();
-					System.out.println("lala");
+					
 					if(db.checkAccLogin(username, password)==true && db.checkTypeAcc(username).equals("khachhang")) out.writeInt(LOGIN_SUCCESS);
 					else out.writeInt(LOGIN_FAIL);
 					
 				}
 				else if(stt == GET_ALL_BOOK) {
-					List<Sach> list = db.getAllBook();
+					int page = in.readInt();
+					
+					List<Sach> list = db.getAllBook(page);
 					
 					oos.writeObject(list);
 				}
 				else if(stt == GET_ALL_MOVIE) {
-					List<DiaPhim> list = db.getAllMovies();
+					int page = in.readInt();
+					
+					List<DiaPhim> list = db.getAllMovies(page);
 					
 					oos.writeObject(list);
 				}
 				else if(stt == GET_ALL_MUSIC) {
-					List<DiaNhac> list = db.getAllMusic();
+					int page = in.readInt();
+					
+					List<DiaNhac> list = db.getAllMusic(page);
 					
 					oos.writeObject(list);
 				}
@@ -118,7 +127,7 @@ public class ClientThread extends Thread{
 				else if(stt == UPDATE_CUSTOMER_INFO) {
 					try {
 						KhachHang kh = (KhachHang) ois.readObject();
-						
+						System.out.println(kh.getNgaySinh());
 						db.editCustomer(kh.getId(), kh.getHoTen(),
 								kh.getNgaySinh(), kh.getDiaChi(), kh.getsDT(), kh.getCoin(), 
 								kh.getUsername(), kh.getPassword());
@@ -190,20 +199,50 @@ public class ClientThread extends Thread{
 					this.stop();
 				}
 				else if(stt == ORDER_REQUEST) {
-					
 					String idkhachhang = in.readUTF();
-					
-					List<MuaHang> listMH = (List<MuaHang>) ois.readObject();
-					
-					String idnhanvien = login.getMainFrame().id;
-					String idhoadon = "HD"+new SanPham().indexOfBill;
+			
+					List<MuaHang> listDH = (List<MuaHang>) ois.readObject();
+			
+					SanPham sp = new SanPham();
+					//String idnhanvien = login.getMainFrame().id;
+					String idhoadon = "HD"+sp.indexOfBill;
 					
 					Timestamp date = new Timestamp(new Date().getTime());
-					db.addBill(idhoadon, idkhachhang, idnhanvien, date, listMH);
+					//if(db.addBill(idhoadon, idkhachhang, idnhanvien, date, listDH)) {
+						//login.getMainFrame().getFuncBillPanel().getBtnRefresh().doClick();
+						
+					if(db.addWait(idhoadon,idkhachhang,date,listDH)) {	
+						out.writeBoolean(true);
+
+						
+						sp.indexOfBill++;
+						
+						IOFile io = new IOFile();
+						io.writeFile();
+					}
+					else {
+						out.writeBoolean(false);
+					}
 					
-					new SanPham().indexOfBill++;
-					new IOFile().writeFile();
-					
+			
+				}
+				else if(stt == COUNT_BOOK) {
+					int count = db.getCountBook();
+					out.writeInt(count);
+					out.flush();
+							
+				}
+				else if(stt == COUNT_MOVIE) {
+					int count = db.getCountMovies();
+					out.writeInt(count);
+					out.flush();
+							
+				}
+				else if(stt == COUNT_MUSIC) {
+					int count = db.getCountMusic();
+					out.writeInt(count);
+					out.flush();
+							
 				}
 				
 			} catch (IOException e) {
@@ -213,6 +252,7 @@ public class ClientThread extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	
 		}
 	}
 }

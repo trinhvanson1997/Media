@@ -1,5 +1,4 @@
-package vn.media.view.book;
-
+package vn.media.view.wait;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -13,42 +12,38 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import vn.media.view.staff.TableStaffPanel;
-
-public class FuncBookPanel extends JPanel implements ActionListener{
+public class FuncWaitPanel extends JPanel implements ActionListener{
 	private JButton btnXemTatCa;
 	private JButton btnThem;
 	private JButton btnSua;
-	private JButton btnRefresh;
 	private JButton btnXoa;
 	private JButton btnTimKiem;
+	private JButton btnRefresh;
+	private JButton btnThongTinChiTiet;
+	
 	private JTextField tfSearch;
-	private TableStaffPanel tablePanel;
-	private String[] s =  {"ID", "Tên Sách", "Nhà xuất bản", "Tác giả", "Số lượng tồn kho", "Giá mua","Giá bán","ngày nhập hàng cuối" };
-	private JComboBox<String> cbType ;
+	private JComboBox<String> cbType;
+	private String[] s={"Mã hóa đơn","Mã khách hàng","Ngày mua hàng"};
 	
-	
-	public FuncBookPanel() {
-		//this.tablePanel=tablePanel;
+	public FuncWaitPanel() {
+		
+		
 		setLayout(new BorderLayout(10,10));
 		setBorder(BorderFactory.createTitledBorder("Chức năng"));
+		
 		add(createSearchPanel(),BorderLayout.NORTH);
 		add(createActionPanel(),BorderLayout.CENTER);
+		
 	}
-	
-	
-
 	private JPanel createSearchPanel() {
 		btnTimKiem  = createButtons("TÌM KIẾM");
 		cbType = new JComboBox<>(s);
 		tfSearch = new JTextField(30);
-		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout(20,0));
 		
 		JPanel panelBtn = new JPanel();
 		panelBtn.setLayout(new BorderLayout(20,0));
-		
 		panelBtn.add(new JLabel("Tìm kiếm theo:"),BorderLayout.WEST);
 		panelBtn.add(cbType,BorderLayout.CENTER);
 		panelBtn.add(btnTimKiem,BorderLayout.EAST);
@@ -62,41 +57,35 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 	private JPanel createActionPanel() {
 		JPanel panel = new JPanel();
 
-		panel.setLayout(new GridLayout(1, 4, 10, 10));
-		
-	panel.setLayout(new GridLayout(1, 5, 10, 10));
+		panel.setLayout(new GridLayout(1, 3, 50, 10));
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
-		btnThem     = createButtons("THÊM");
-		btnSua      = createButtons("SỬA");
-		btnXoa      = createButtons("XÓA");
 		btnRefresh 	= createButtons("REFRESH");
+		btnThongTinChiTiet = createButtons("XỬ LÝ ĐƠN HÀNG");
 		
 		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);
-		panel.add(btnThem);
-		panel.add(btnSua);
-		panel.add(btnXoa);
+		panel.add(btnThongTinChiTiet);
+		
 		
 		return panel;
 	}
-	
 	public JButton createButtons(String name){
 		JButton button = new JButton(name);
 		button.addActionListener(this);
 		return button;
 	}
-
-
+	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
 	}
-
 
 	public JButton getBtnXemTatCa() {
 		return btnXemTatCa;
+	}
+
+	public JButton getBtnTimKiem() {
+		return btnTimKiem;
 	}
 	public JButton getBtnRefresh() {
 		return btnRefresh;
@@ -106,79 +95,54 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 	public void setBtnRefresh(JButton btnRefresh) {
 		this.btnRefresh = btnRefresh;
 	}
+	public void setBtnTimKiem(JButton btnTimKiem) {
+		this.btnTimKiem = btnTimKiem;
+	}
 
 	public void setBtnXemTatCa(JButton btnXemTatCa) {
 		this.btnXemTatCa = btnXemTatCa;
 	}
 
-
 	public JButton getBtnThem() {
 		return btnThem;
 	}
-
 
 	public void setBtnThem(JButton btnThem) {
 		this.btnThem = btnThem;
 	}
 
-
 	public JButton getBtnSua() {
 		return btnSua;
 	}
-
 
 	public void setBtnSua(JButton btnSua) {
 		this.btnSua = btnSua;
 	}
 
-
 	public JButton getBtnXoa() {
 		return btnXoa;
 	}
 
-
 	public void setBtnXoa(JButton btnXoa) {
 		this.btnXoa = btnXoa;
 	}
-
-
-	public JButton getBtnTimKiem() {
-		return btnTimKiem;
-	}
-
-
-	public void setBtnTimKiem(JButton btnTimKiem) {
-		this.btnTimKiem = btnTimKiem;
-	}
-
-
 	public JTextField getTfSearch() {
 		return tfSearch;
 	}
-
-
 	public void setTfSearch(JTextField tfSearch) {
 		this.tfSearch = tfSearch;
 	}
-
-
-	public TableStaffPanel getTablePanel() {
-		return tablePanel;
-	}
-
-
-	public void setTablePanel(TableStaffPanel tablePanel) {
-		this.tablePanel = tablePanel;
-	}
-
-
 	public JComboBox<String> getCbType() {
 		return cbType;
 	}
-
-
 	public void setCbType(JComboBox<String> cbType) {
 		this.cbType = cbType;
+	}
+	public JButton getBtnThongTinChiTiet() {
+		return btnThongTinChiTiet;
+	}
+	public void setBtnThongTinChiTiet(JButton btnThongTinChiTiet) {
+		this.btnThongTinChiTiet = btnThongTinChiTiet;
 	}
 	
 }

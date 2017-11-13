@@ -8,10 +8,22 @@ public class HoaDon {
 	private String idKhachHang;
 	private String idNhanVien;
 	private Timestamp ngayMuaHang;
+	private Timestamp ngayXuLy;
 	private List<MuaHang> muaHang;
 	
 	public HoaDon() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public HoaDon(String id, String idKhachHang, String idNhanVien, Timestamp ngayMuaHang, Timestamp ngayXuLy,
+			List<MuaHang> muaHang) {
+		super();
+		this.id = id;
+		this.idKhachHang = idKhachHang;
+		this.idNhanVien = idNhanVien;
+		this.ngayMuaHang = ngayMuaHang;
+		this.ngayXuLy = ngayXuLy;
+		this.muaHang = muaHang;
 	}
 
 	public String getId() {
@@ -46,6 +58,14 @@ public class HoaDon {
 		this.ngayMuaHang = ngayMuaHang;
 	}
 
+	public Timestamp getNgayXuLy() {
+		return ngayXuLy;
+	}
+
+	public void setNgayXuLy(Timestamp ngayXyLy) {
+		this.ngayXuLy = ngayXyLy;
+	}
+
 	public List<MuaHang> getMuaHang() {
 		return muaHang;
 	}
@@ -54,15 +74,6 @@ public class HoaDon {
 		this.muaHang = muaHang;
 	}
 
-	public HoaDon(String id, String idKhachHang, String idNhanVien, Timestamp ngayMuaHang, List<MuaHang> muaHang) {
-		super();
-		this.id = id;
-		this.idKhachHang = idKhachHang;
-		this.idNhanVien = idNhanVien;
-		this.ngayMuaHang = ngayMuaHang;
-		this.muaHang = muaHang;
-	}
-
-
+	
 	
 }

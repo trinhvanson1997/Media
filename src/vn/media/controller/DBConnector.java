@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import vn.media.models.DiaNhac;
@@ -168,14 +169,14 @@ public class DBConnector {
 	
 	/*					STAFF							*/
 	
-	public List<NhanVien> getAllStaff() {
+	public List<NhanVien> getAllStaff(int page) {
 		List<NhanVien> lst = new ArrayList<>();
 		conn = getConnection();
 		try {
 			
 
 			rs = stm.executeQuery(
-					"SELECT nhanvien.*,pass FROM nhanvien,account WHERE nhanvien.username=account.username;");
+					"SELECT nhanvien.*,pass FROM nhanvien,account WHERE nhanvien.username=account.username LIMIT 20 OFFSET "+page*20+";");
 			while (rs.next()) {
 
 				String id = rs.getString("id");
@@ -383,18 +384,38 @@ public class DBConnector {
 		return "";
 	}
 	
+	public int getCountStaff() {
+		conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM nhanvien;");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	
+	
+	
+	
+	
 	
 	/*						CUSTOMER					*/
 	
 
-	public List<KhachHang> getAllCus() {
+	public List<KhachHang> getAllCus(int page) {
 		List<KhachHang> lst = new ArrayList<>();
 
 		try {
 			conn = getConnection();
 
 			rs = stm.executeQuery(
-					"SELECT khachhang.*,pass FROM khachhang,account WHERE khachhang.username=account.username;");
+					"SELECT khachhang.*,pass FROM khachhang,account WHERE khachhang.username=account.username  LIMIT 20 OFFSET "+page*20+";");
 			while (rs.next()) {
 
 				String id = rs.getString("id");
@@ -408,7 +429,7 @@ public class DBConnector {
 				KhachHang kh = new KhachHang(id, hoten, ngaysinh, diachi, sdt, coin, username, password);
 				lst.add(kh);
 			}
-			System.out.println("select all staff");
+			System.out.println("select all customer");
 			conn.close();
 			return lst;
 		} catch (SQLException e) {
@@ -620,15 +641,32 @@ return false;
 		return "";
 	}
 	
+	public int getCountCus() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM khachhang;");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	
+	
 	
 	/*						MOVIES				*/
 	
-	public List<Sach> getAllBook() {
+	public List<Sach> getAllBook(int page) {
 		conn = getConnection();
 		List<Sach> list = new ArrayList<>();
 		
 		try {
-			rs 	 = stm.executeQuery("SELECT sanpham.*,nxb FROM sanpham,sach where sanpham.id=sach.id");
+			rs 	 = stm.executeQuery("SELECT sanpham.*,nxb FROM sanpham,sach where sanpham.id=sach.id LIMIT 20 OFFSET "+page*20+";");
 			
 			while(rs.next()) {
 				String id 		= rs.getString("id");
@@ -653,6 +691,21 @@ return false;
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public int getCountBook() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM sach;");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	public List<String> getTacGia(String id) throws SQLException{
@@ -706,7 +759,7 @@ return false;
 		List<String> tacgia = sach.getTacGia();
 		
 		try {
-			int result1 = stm.executeUpdate("INSERT INTO sanpham VALUES ('"+id+"','"+tensp+"','DP',"+soluong+
+			int result1 = stm.executeUpdate("INSERT INTO sanpham VALUES ('"+id+"','"+tensp+"','SA',"+soluong+
 					","+giamua+","+giaban+",'"+date+"');");
 			
 			int result2 = stm.executeUpdate("INSERT INTO sach VALUES ('"+id+"','"+nxb+"');");
@@ -817,12 +870,12 @@ return false;
 	
 	/*						MOVIES				*/
 	
-	public List<DiaPhim> getAllMovies() {
+	public List<DiaPhim> getAllMovies(int page) {
 		conn = getConnection();
 		List<DiaPhim> list = new ArrayList<>();
 		
 		try {
-			rs 	 = stm.executeQuery("SELECT sanpham.*,daodien FROM sanpham,diaphim where sanpham.id=diaphim.id");
+			rs 	 = stm.executeQuery("SELECT sanpham.*,daodien FROM sanpham,diaphim where sanpham.id=diaphim.id LIMIT 20 OFFSET "+page*20+";");
 			
 			while(rs.next()) {
 				String id 		= rs.getString("id");
@@ -847,6 +900,21 @@ return false;
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public int getCountMovies() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM diaphim;");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	public List<String> getDienVien(String id) throws SQLException{
@@ -1008,12 +1076,12 @@ return false;
 	
 	/*						MUSIC				*/
 	
-	public List<DiaNhac> getAllMusic() {
+	public List<DiaNhac> getAllMusic(int page) {
 		conn = getConnection();
 		List<DiaNhac> list = new ArrayList<>();
 		
 		try {
-			rs 	 = stm.executeQuery("SELECT sanpham.*,theloai FROM sanpham,dianhac where sanpham.id=dianhac.id");
+			rs 	 = stm.executeQuery("SELECT sanpham.*,theloai FROM sanpham,dianhac where sanpham.id=dianhac.id LIMIT 20 OFFSET "+page*20+";");
 			
 			while(rs.next()) {
 				String id 		= rs.getString("id");
@@ -1037,6 +1105,21 @@ return false;
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public int getCountMusic() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM dianhac;");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	
@@ -1093,7 +1176,7 @@ return false;
 		List<String> casi = dianhac.getCaSi();
 		
 		try {
-			int result1 = stm.executeUpdate("INSERT INTO sanpham VALUES ('"+id+"','"+tensp+"','SA',"+soluong+
+			int result1 = stm.executeUpdate("INSERT INTO sanpham VALUES ('"+id+"','"+tensp+"','DN',"+soluong+
 					","+giamua+","+giaban+",'"+date+"');");
 			
 			int result2 = stm.executeUpdate("INSERT INTO dianhac VALUES ('"+id+"','"+theloai+"');");
@@ -1203,18 +1286,19 @@ return false;
 	
 	/*									BILL										*/
 	
-	public List<HoaDon> getAllBill() {
+	public List<HoaDon> getAllBill(int page) {
 		conn = getConnection();
 		List<HoaDon> listHD = new ArrayList<>();
 		try {
-			rs = stm.executeQuery("SELECT * FROM hoadon;");
+			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Hoàn tất' LIMIT 20 OFFSET "+20*page+";");
 			while(rs.next()) {
 				String idhoadon 	= rs.getString("id");
 				String idkhachhang 	= rs.getString("idkhachhang");
 				String idnhanvien 	= rs.getString("idnhanvien");
 				Timestamp ngaymua	= rs.getTimestamp("ngaymua");
+				Timestamp ngayxuly 	= rs.getTimestamp("ngayxuly");
 				
-				HoaDon hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua, getListMuaHang(idhoadon));
+				HoaDon hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua, ngayxuly, getListMuaHang(idhoadon));
 				listHD.add(hd);
 			}
 			conn.close();
@@ -1226,6 +1310,22 @@ return false;
 		}
 		return null;
 	}
+	
+	public int getCountBill() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM hoadon WHERE trangthai = 'Hoàn tất';");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	
 	public List<MuaHang> getListMuaHang(String idhoadon){
 		
@@ -1260,20 +1360,21 @@ return false;
 
 	}
 	
-	public void addBill(String idhoadon, String idkhachhang, String idnhanvien,Timestamp date,List<MuaHang> listMH) {
+	public boolean addBill(String idhoadon, String idkhachhang, String idnhanvien,Timestamp date,Timestamp date2, List<MuaHang> listMH) {
 		conn = getConnection();
 		
 		try {
-			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','"+idnhanvien+"','"+date+"') ;");
+			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','"+idnhanvien+"','"+date+"','"+date2+"','Hoàn tất') ;");
 			for(int i=0;i<listMH.size();i++) {
 				System.out.println(listMH.get(i).getIdSanPham());
 			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+listMH.get(i).getIdSanPham()+"' , "+listMH.get(i).getSoLuong()+");");
 			}
+			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return false;
 		
 	}
 	
@@ -1287,8 +1388,9 @@ return false;
 				String idkhachhang 	= rs.getString("idkhachhang");
 				String idnhanvien 	= rs.getString("idnhanvien");
 				Timestamp ngaymua	= rs.getTimestamp("ngaymua");
+				Timestamp ngayxuly 	= rs.getTimestamp("ngayxuly");
 				
-				 hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua, getListMuaHang(idhoadon));
+				 hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua,ngayxuly, getListMuaHang(idhoadon));
 				conn.close();
 				return hd;
 			}
@@ -1336,7 +1438,76 @@ return false;
 		
 	}
 
+	public boolean addWait(String idhoadon, String idkhachhang,Timestamp date,List<MuaHang> listMH) {
+		conn = getConnection();
+		
+		try {
+			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','NV0','"+date+"',"+null+",'Đang xử lý') ;");
+			for(int i=0;i<listMH.size();i++) {
+				System.out.println(listMH.get(i).getIdSanPham());
+			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+listMH.get(i).getIdSanPham()+"' , "+listMH.get(i).getSoLuong()+");");
+			}
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
 
+	public List<HoaDon> getAllWait(int page) {
+		conn = getConnection();
+		List<HoaDon> listHD = new ArrayList<>();
+		try {
+			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Đang xử lý' LIMIT 20 OFFSET "+20*page+";");
+			while(rs.next()) {
+				String idhoadon 	= rs.getString("id");
+				String idkhachhang 	= rs.getString("idkhachhang");
+				String idnhanvien 	= rs.getString("idnhanvien");
+				Timestamp ngaymua	= rs.getTimestamp("ngaymua");
+				
+				HoaDon hd = new HoaDon(idhoadon, idkhachhang, idnhanvien, ngaymua, null, getListMuaHang(idhoadon));
+				listHD.add(hd);
+			}
+			conn.close();
+			return listHD;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public int getCountWait() {
+conn = getConnection();
+		
+		try {
+			rs = stm.executeQuery("SELECT COUNT(*) FROM hoadon WHERE trangthai = 'Đang xử lý';");
+			if(rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public void handlingWait(String idnhanvien, String idhoadon) {
+		conn = getConnection();
+		Timestamp date = new Timestamp(new Date().getTime());
+		
+		try {
+			stm.executeUpdate("UPDATE hoadon SET idnhanvien = '"+idnhanvien+"', trangthai = 'Hoàn tất', ngayxuly = '"+date+"' WHERE id ='"+idhoadon+"' ;  ");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	
 }

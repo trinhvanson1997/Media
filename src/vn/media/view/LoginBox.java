@@ -29,29 +29,39 @@ import vn.media.controller.bill.RefreshBillController;
 import vn.media.controller.bill.SearchBillController;
 import vn.media.controller.bill.SeeBillDetailController;
 import vn.media.controller.bill.ShowAllBillController;
+import vn.media.controller.bill.TableBillController;
 import vn.media.controller.book.AddBookController;
 import vn.media.controller.book.DeleteBookController;
 import vn.media.controller.book.EditBookController;
 import vn.media.controller.book.SearchBookController;
 import vn.media.controller.book.ShowAllBookController;
+import vn.media.controller.book.TableBookController;
 import vn.media.controller.customer.EditPassCusController;
 import vn.media.controller.customer.SearchCusController;
 import vn.media.controller.customer.ShowAllCusController;
+import vn.media.controller.customer.TableCusController;
 import vn.media.controller.movies.AddMoviesController;
 import vn.media.controller.movies.DeleteMoviesController;
 import vn.media.controller.movies.EditMoviesController;
 import vn.media.controller.movies.SearchMoviesController;
 import vn.media.controller.movies.ShowAllMoviesController;
+import vn.media.controller.movies.TableMoviesController;
 import vn.media.controller.music.AddMusicController;
 import vn.media.controller.music.DeleteMusicController;
 import vn.media.controller.music.EditMusicController;
 import vn.media.controller.music.SearchMusicController;
 import vn.media.controller.music.ShowAllMusicController;
+import vn.media.controller.music.TableMusicController;
 import vn.media.controller.staff.AddStaffController;
 import vn.media.controller.staff.DeleteStaffController;
 import vn.media.controller.staff.EditPassStaffController;
 import vn.media.controller.staff.SearchStaffController;
 import vn.media.controller.staff.ShowAllStaffController;
+import vn.media.controller.staff.TableStaffController;
+import vn.media.controller.wait.HandlingWait;
+import vn.media.controller.wait.RefreshWaitController;
+import vn.media.controller.wait.SearchWaitController;
+import vn.media.controller.wait.ShowAllWaitController;
 import vn.media.models.MuaHang;
 
 public class LoginBox extends JFrame implements ActionListener,KeyListener{
@@ -80,15 +90,15 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 
 	private JPanel createButtonPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(1, 3,10,10));
-		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		panel.setLayout(new GridLayout(1, 2,10,10));
+		panel.setBorder(new EmptyBorder(10, 20, 20, 20));
 		
 		btnLogin    = createButton("Login"); 
-		btnRegister = createButton("Register");
+		//btnRegister = createButton("Register");
 		btnClose    = createButton("Close");
 		
 		panel.add(btnLogin);
-		panel.add(btnRegister);
+		//panel.add(btnRegister);
 		panel.add(btnClose);
 		
 		return panel;
@@ -149,7 +159,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnClose){
-			dispose();
+			System.exit(0);
 		}
 		
 		
@@ -174,8 +184,8 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 			dispose();
 		
 			
-			
-			if(db.checkTypeAcc(username).equals("quanly")){
+			String typeAccount = db.checkTypeAcc(username);
+			if(typeAccount.equals("quanly")){
 				dispose();
 				System.out.println("you loggin as an administrator");
 				
@@ -187,6 +197,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				 new EditPassStaffController(mainFrame, db);
 				 new DeleteStaffController(mainFrame, db);
 				 new SearchStaffController(mainFrame, db);
+				 new TableStaffController(mainFrame, db);
 				 
 				 /*			CHANGE MAINPANEL     		*/
 				new ChangeTableController(mainFrame,db);
@@ -196,7 +207,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new ShowAllCusController(mainFrame, db);
 				new EditPassCusController(mainFrame, db);
 				new SearchCusController(mainFrame, db);
-				
+				new TableCusController(mainFrame, db);
 				
 				/*			FUNCTIONS OF BOOKS			*/
 				new ShowAllBookController(mainFrame, db);
@@ -204,7 +215,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchBookController(mainFrame, db);
 				new DeleteBookController(mainFrame, db);
 				new EditBookController(mainFrame, db);
-				
+				new TableBookController(mainFrame, db);
 				
 				/*			FUNCTIONS OF MOVIES			*/
 				new ShowAllMoviesController(mainFrame, db);
@@ -212,6 +223,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchMoviesController(mainFrame, db);
 				new DeleteMoviesController(mainFrame, db);
 				new EditMoviesController(mainFrame, db);
+				new TableMoviesController(mainFrame, db);
 				
 				/*			FUNCTIONS OF MUSIC			*/
 				new ShowAllMusicController(mainFrame, db);
@@ -219,12 +231,20 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchMusicController( mainFrame, db);
 				new DeleteMusicController(mainFrame, db);
 				new EditMusicController(mainFrame, db);
+				new TableMusicController(mainFrame, db);
 				
+				/* 			FUNCTIONS OF BILL			*/
 				new SearchBillController(mainFrame, db);
 				new ShowAllBillController(mainFrame, db);
 				new RefreshBillController(mainFrame, db);
 				new SeeBillDetailController(mainFrame, db);
-
+				new TableBillController(mainFrame, db);
+				
+				new SearchWaitController(mainFrame, db);
+				new ShowAllWaitController(mainFrame, db);
+				new RefreshWaitController(mainFrame, db);
+				new HandlingWait(mainFrame, db);
+				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -235,7 +255,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				 
 			}
 			
-			else if(db.checkTypeAcc(username).equals("nhanvien")) {
+			else if(typeAccount.equals("nhanvien")) {
 					System.out.println("you loggin as a staff");
 				
 				  mainFrame = new MainFrame(username,db);
@@ -248,7 +268,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new ShowAllCusController(mainFrame, db);
 				new EditPassCusController(mainFrame, db);
 				new SearchCusController(mainFrame, db);
-				
+				new TableCusController(mainFrame, db);
 				
 				/*			FUNCTIONS OF BOOKS			*/
 				new ShowAllBookController(mainFrame, db);
@@ -256,7 +276,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchBookController(mainFrame, db);
 				new DeleteBookController(mainFrame, db);
 				new EditBookController(mainFrame, db);
-				
+				new TableBookController(mainFrame, db);
 				
 				/*			FUNCTIONS OF MOVIES			*/
 				new ShowAllMoviesController(mainFrame, db);
@@ -264,6 +284,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchMoviesController(mainFrame, db);
 				new DeleteMoviesController(mainFrame, db);
 				new EditMoviesController(mainFrame, db);
+				new TableMoviesController(mainFrame, db);
 				
 				/*			FUNCTIONS OF MUSIC			*/
 				new ShowAllMusicController(mainFrame, db);
@@ -271,12 +292,20 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new SearchMusicController( mainFrame, db);
 				new DeleteMusicController(mainFrame, db);
 				new EditMusicController(mainFrame, db);
+				new TableMusicController(mainFrame, db);
 				
+				/*			FUNCTIONS OF BILL			*/
 				new SearchBillController(mainFrame, db);
 				new ShowAllBillController(mainFrame, db);
 				new RefreshBillController(mainFrame, db);
 				new SeeBillDetailController(mainFrame, db);
+				new TableBillController(mainFrame, db);
 				
+				/*			FUNCTIONS OF WAIT			*/
+				new SearchWaitController(mainFrame, db);
+				new ShowAllWaitController(mainFrame, db);
+				new RefreshWaitController(mainFrame, db);
+				new HandlingWait(mainFrame, db);
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
