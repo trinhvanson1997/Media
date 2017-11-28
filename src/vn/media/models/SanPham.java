@@ -10,6 +10,7 @@ public class SanPham implements Serializable{
 	public static int indexOfMovies;
 	public static int indexOfMusic;
 	public static int indexOfBill;
+	public static int indexOfPaid;
 	
 	protected String id;
 	protected String tenSP;

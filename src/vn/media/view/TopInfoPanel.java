@@ -32,7 +32,7 @@ public class TopInfoPanel extends JPanel{
 		
 		NhanVien nv = db.getStaff(username);
 		
-		lbUser = new JLabel("Xin chao,  "+nv.getHoTen());
+		lbUser = new JLabel("Xin chào: ,  "+nv.getHoTen());
 		lbUser.setHorizontalAlignment(JLabel.CENTER);
 	
 		

@@ -25,6 +25,7 @@ public class SeeBillDetailController {
 				
 				if(index >= 0) {
 					String idhoadon = (String) mainFrame.getTableBillPanel().getTable().getModel().getValueAt(index, 0);
+					System.out.println(idhoadon);
 					HoaDon hd = db.getBill(idhoadon);
 					
 					new BillDetailView(idhoadon, hd);

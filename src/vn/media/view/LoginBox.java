@@ -7,12 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,6 +36,12 @@ import vn.media.controller.customer.EditPassCusController;
 import vn.media.controller.customer.SearchCusController;
 import vn.media.controller.customer.ShowAllCusController;
 import vn.media.controller.customer.TableCusController;
+import vn.media.controller.fee.AddFeeController;
+import vn.media.controller.fee.DeleteFeeController;
+import vn.media.controller.fee.EditFeeController;
+import vn.media.controller.fee.PaidFeeController;
+import vn.media.controller.fee.SearchFeeController;
+import vn.media.controller.fee.TableFeeController;
 import vn.media.controller.movies.AddMoviesController;
 import vn.media.controller.movies.DeleteMoviesController;
 import vn.media.controller.movies.EditMoviesController;
@@ -55,6 +57,7 @@ import vn.media.controller.music.TableMusicController;
 import vn.media.controller.staff.AddStaffController;
 import vn.media.controller.staff.DeleteStaffController;
 import vn.media.controller.staff.EditPassStaffController;
+import vn.media.controller.staff.EditSalaryStaffController;
 import vn.media.controller.staff.SearchStaffController;
 import vn.media.controller.staff.ShowAllStaffController;
 import vn.media.controller.staff.TableStaffController;
@@ -62,7 +65,7 @@ import vn.media.controller.wait.HandlingWait;
 import vn.media.controller.wait.RefreshWaitController;
 import vn.media.controller.wait.SearchWaitController;
 import vn.media.controller.wait.ShowAllWaitController;
-import vn.media.models.MuaHang;
+import vn.media.models.Store;
 
 public class LoginBox extends JFrame implements ActionListener,KeyListener{
 	private JTextField tfUsername;
@@ -71,15 +74,18 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 	private DBConnector db;
 	private IOFile ioFile=new IOFile();
 	private 	MainFrame  mainFrame ;
-	public LoginBox(DBConnector db) {
+	private Store store;
+	
+	public LoginBox(DBConnector db,Store store) {
 		this.db=db;
+		this.store = store;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(400,300);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout(10,10));
 		setTitle("Login Box");
-		
+		setIconImage(new ImageIcon(getClass().getResource("/login.png")).getImage());
 		add(createLabelPanel(),BorderLayout.WEST);
 		add(createTextFieldPanel(),BorderLayout.CENTER);
 		add(createButtonPanel(),BorderLayout.SOUTH);
@@ -109,7 +115,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 		panel.setLayout(new GridLayout(2, 1,10,10));
 		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
-		tfUsername = new JTextField(15); 
+		tfUsername = new JTextField(15);  
 		tfPassword = new JPasswordField(15);
 		
 		
@@ -171,7 +177,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 		
 		if(e.getSource() == btnRegister){
 		dispose();
-			RegisterBox register = new RegisterBox(db);
+			RegisterBox register = new RegisterBox(db,store);
 		}
 		
 	}
@@ -189,7 +195,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				dispose();
 				System.out.println("you loggin as an administrator");
 				
-				  mainFrame = new MainFrame(username,db);
+				  mainFrame = new MainFrame(username,db,store);
 				 
 				 /*          FUNCTIONS OF STAFF        */
 				 new ShowAllStaffController(mainFrame,db);
@@ -198,9 +204,9 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				 new DeleteStaffController(mainFrame, db);
 				 new SearchStaffController(mainFrame, db);
 				 new TableStaffController(mainFrame, db);
-				 
+				 new EditSalaryStaffController(mainFrame, db);
 				 /*			CHANGE MAINPANEL     		*/
-				new ChangeTableController(mainFrame,db);
+				new ChangeTableController(mainFrame,db,store);
 				
 				
 				/*			FUNCTIONS OF CUSTOMER 		*/
@@ -245,6 +251,14 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new RefreshWaitController(mainFrame, db);
 				new HandlingWait(mainFrame, db);
 				
+				new SearchFeeController(mainFrame, db);
+				new TableFeeController(mainFrame, db);
+				new AddFeeController(mainFrame, db);
+				new DeleteFeeController(mainFrame, db);
+				new EditFeeController(mainFrame, db);
+				
+				new PaidFeeController(mainFrame, db, store);
+				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -258,10 +272,10 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 			else if(typeAccount.equals("nhanvien")) {
 					System.out.println("you loggin as a staff");
 				
-				  mainFrame = new MainFrame(username,db);
+				  mainFrame = new MainFrame(username,db,store);
 		
 				 /*			CHANGE MAINPANEL     		*/
-				new ChangeTableController(mainFrame,db);
+				new ChangeTableController(mainFrame,db,store);
 				
 				
 				/*			FUNCTIONS OF CUSTOMER 		*/
@@ -306,6 +320,8 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new ShowAllWaitController(mainFrame, db);
 				new RefreshWaitController(mainFrame, db);
 				new HandlingWait(mainFrame, db);
+				
+				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {

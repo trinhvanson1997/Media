@@ -42,14 +42,20 @@ public class HandlingWait {
 					if(flag) {
 						db.handlingWait(mainFrame.id,idhoadon);
 						
-						long tienTamTinh=0;
-						for(MuaHang m: list) {
-							tienTamTinh += m.getDonGia()*m.getSoLuong();
-						}
+//						long tienTamTinh=0;
+//						for(MuaHang m: list) {
+//							tienTamTinh += m.getDonGia()*m.getSoLuong();
+//						}
+//						
+//						System.out.println("Tien tam tinh: "+ tienTamTinh);
+//						System.out.println("id: "+hd.getIdKhachHang());
+//						long coin = db.getCoinCus(hd.getIdKhachHang()) - tienTamTinh;
+//						System.out.println("db.getcoin: "+ db.getCoinCus(hd.getIdKhachHang()));
+//						System.out.println("coin: "+coin);
+//						
+//						db.updateCoin(hd.getIdKhachHang(), coin);
 						
-						long coin = db.getCoinCus(hd.getIdKhachHang()) - tienTamTinh;
 						
-						db.updateCoin(hd.getIdKhachHang(), coin);
 						for(MuaHang dh:list) {
 							String idsanpham = dh.getIdSanPham();
 							int soluong = db.getSoLuongTonKho(idsanpham) - dh.getSoLuong();
@@ -60,6 +66,7 @@ public class HandlingWait {
 						mainFrame.getFuncWaitPanel().getBtnRefresh().doClick();
 						
 						JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thành công !");
+						mainFrame.getFuncBillPanel().getBtnRefresh().doClick();
 					}
 					else JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thất bại do hết hàng !");
 				} else

@@ -154,6 +154,7 @@ public class EditMusicView extends JDialog implements ActionListener{
 					dispose();
 					
 					List<DiaNhac> list = db.getAllMusic(mainFrame.getPageMusic());
+					mainFrame.setListMusic(list);
 					tableMusicPanel.updateTable(list);
 					
 					JOptionPane.showMessageDialog(null, "Sửa thông tin thành công");

@@ -29,8 +29,7 @@ public class TableCusPanel extends JPanel implements ActionListener {
 	
 	public TableCusPanel() {
 		setLayout(new BorderLayout(10, 0));
-		// setBorder(BorderFactory.createEtcheBorder(EtchedBorder.RAISED));
-		// setBorder(BorderFactory.createEtchedBorder());
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 

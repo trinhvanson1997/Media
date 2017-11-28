@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,6 +41,7 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 
 	private JPanel createSearchPanel() {
 		btnTimKiem  = createButtons("TÌM KIẾM");
+		btnTimKiem.setIcon(new ImageIcon(getClass().getResource("/search.png")));
 		cbType = new JComboBox<>(s);
 		tfSearch = new JTextField(30);
 		
@@ -71,6 +73,12 @@ public class FuncBookPanel extends JPanel implements ActionListener{
 		btnSua      = createButtons("SỬA");
 		btnXoa      = createButtons("XÓA");
 		btnRefresh 	= createButtons("REFRESH");
+		
+		btnXemTatCa.setIcon(new ImageIcon(getClass().getResource("/show_all.png")));
+		btnThem.setIcon(new ImageIcon(getClass().getResource("/add.png")));
+		btnSua.setIcon(new ImageIcon(getClass().getResource("/edit.png")));
+		btnXoa.setIcon(new ImageIcon(getClass().getResource("/delete.png")));
+		btnRefresh.setIcon(new ImageIcon(getClass().getResource("/refresh.png")));
 		
 		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);

@@ -18,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.SanPham;
+import vn.media.models.Store;
 import vn.media.view.customer.TableCusPanel;
 
 public class RegisterBox extends JDialog implements ActionListener {
@@ -30,10 +31,12 @@ public class RegisterBox extends JDialog implements ActionListener {
 	private DBConnector db;
 	private TableCusPanel tableCusPanel;
 	private SanPham sp;
+	private Store store;
 	
-	public RegisterBox(DBConnector db) {
+	public RegisterBox(DBConnector db,Store store) {
 		this.db = db;
 		this.tableCusPanel=tableCusPanel;
+		this.store = store;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(400, 300);
@@ -43,7 +46,7 @@ public class RegisterBox extends JDialog implements ActionListener {
 
 		lbID       = new JLabel("ID");
 		lbHoTen    = new JLabel("Họ Tên");
-		lbNgaySinh = new JLabel("Ngày Sinh");
+		lbNgaySinh = new JLabel("Ngày Sinh"); 
 		lbDiaChi   = new JLabel("Địa Chỉ");
 		lbSDT      = new JLabel("SĐT");
 		//lbCoin    = new JLabel("Lương");
@@ -99,7 +102,7 @@ public class RegisterBox extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnHuy) {
 			dispose();
-			new LoginBox(db).setVisible(true);;
+			new LoginBox(db,store).setVisible(true);;
 		}
 		if (e.getSource() == btnThem) {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -122,7 +125,7 @@ public class RegisterBox extends JDialog implements ActionListener {
 					
 					dispose();
 					
-					 new LoginBox(db);
+					 new LoginBox(db,store);
 				} catch (NumberFormatException e1) {
 				System.out.println("Fail to register");
 				JOptionPane.showMessageDialog(null, "Đăng ký thất bại !");

@@ -24,6 +24,7 @@ private JButton btnBack,btnNext;
 				int page =mainFrame.getPageMusic();
 				
 				if( page > 0) {
+					System.out.println(page);
 					mainFrame.setPageMusic(page-1);
 					List<DiaNhac> list = db.getAllMusic(page-1);
 					mainFrame.getTabbedProduct().getTableMusicPanel().updateTable(list);
@@ -38,9 +39,10 @@ private JButton btnBack,btnNext;
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int page = mainFrame.getPageMovies();
+				int page = mainFrame.getPageMusic();
 				
 				if(page< db.getCountMusic()/20 ) {
+					System.out.println(page);
 					mainFrame.setPageMusic(page+1);
 					List<DiaNhac> list = db.getAllMusic(page+1);
 					mainFrame.getTabbedProduct().getTableMusicPanel().updateTable(list);

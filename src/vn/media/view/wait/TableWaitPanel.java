@@ -98,7 +98,7 @@ public class TableWaitPanel extends JPanel implements ActionListener {
 				data[i][0] = list.get(i).getId();
 				data[i][1] = list.get(i).getIdKhachHang();
 				data[i][2] = new SimpleDateFormat("dd/MM/yyyy HH:mm::ss").format(list.get(i).getNgayMuaHang());
-				data[i][3] = "Đang xử lý";
+				data[i][3] = "Đang chờ xử lý";
 			
 			
 		}

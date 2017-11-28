@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import vn.media.models.KhachHang;
 import vn.media.models.MuaHang;
 import vn.media.models.Sach;
 import vn.media.models.SanPham;
+import vn.media.serialization.HistoryWait;
 import vn.media.view.LoginBox;
 
 public class ClientThread extends Thread{
@@ -27,7 +29,7 @@ public class ClientThread extends Thread{
 					,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
 					,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
 							,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19
-							,COUNT_BOOK=20,COUNT_MOVIE=21,COUNT_MUSIC=22;
+							,COUNT_BOOK=20,COUNT_MOVIE=21,COUNT_MUSIC=22,SERVER_CLOSE=23,GET_HISTORY=24;
 	public Socket socket;
 	public Server server;
 	public DBConnector db;
@@ -61,7 +63,7 @@ public class ClientThread extends Thread{
 		while(true) {
 			try {
 				int stt=in.readInt();
-				
+				System.out.println("stt : "+stt);
 				if(stt==LOGIN) {
 					String username = in.readUTF();
 					String password = in.readUTF();
@@ -75,21 +77,117 @@ public class ClientThread extends Thread{
 					
 					List<Sach> list = db.getAllBook(page);
 					
-					oos.writeObject(list);
+					out.writeInt(list.size());
+					out.flush();
+					
+					for(int i=0;i<list.size();i++) {
+						oos.writeObject(list.get(i).getTacGia());
+						oos.flush();
+						
+						out.writeUTF(list.get(i).getId());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTenSP());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getMaLoaiSP());
+						out.flush();
+						
+						out.writeInt(list.get(i).getSoLuongTonKho());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaMua());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaBan());
+						out.flush();
+						
+						out.writeUTF(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(list.get(i).getNgayNhapHangCuoi()));
+						out.flush();
+						
+						out.writeUTF(list.get(i).getNhaXB());
+						out.flush();
+						
+						
+					}
 				}
 				else if(stt == GET_ALL_MOVIE) {
 					int page = in.readInt();
 					
 					List<DiaPhim> list = db.getAllMovies(page);
 					
-					oos.writeObject(list);
+					out.writeInt(list.size());
+					out.flush();
+					
+					for(int i=0;i<list.size();i++) {
+						oos.writeObject(list.get(i).getDienVien());
+						oos.flush();
+						
+						out.writeUTF(list.get(i).getId());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTenSP());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getMaLoaiSP());
+						out.flush();
+						
+						out.writeInt(list.get(i).getSoLuongTonKho());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaMua());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaBan());
+						out.flush();
+						
+						out.writeUTF(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(list.get(i).getNgayNhapHangCuoi()));
+						out.flush();
+						
+						out.writeUTF(list.get(i).getDaoDien());
+						out.flush();
+						
+						
+					}
 				}
 				else if(stt == GET_ALL_MUSIC) {
 					int page = in.readInt();
 					
 					List<DiaNhac> list = db.getAllMusic(page);
 					
-					oos.writeObject(list);
+					out.writeInt(list.size());
+					out.flush();
+					
+					for(int i=0;i<list.size();i++) {
+						oos.writeObject(list.get(i).getCaSi());
+						oos.flush();
+						
+						out.writeUTF(list.get(i).getId());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTenSP());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getMaLoaiSP());
+						out.flush();
+						
+						out.writeInt(list.get(i).getSoLuongTonKho());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaMua());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaBan());
+						out.flush();
+						
+						out.writeUTF(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(list.get(i).getNgayNhapHangCuoi()));
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTheLoai());
+						out.flush();
+						
+						
+					}
 				}
 				else if(stt == GET_CUSTOMER_NAME) {
 					String username = in.readUTF();
@@ -98,8 +196,8 @@ public class ClientThread extends Thread{
 					out.writeUTF(name);
 				}
 				else if(stt == GET_COIN_CUS) {
-					String username = in.readUTF();
-					long coin = db.getCoinCus(username);
+					String id = in.readUTF();
+					long coin = db.getCoinCus(id);
 					
 					out.writeLong(coin);
 				}
@@ -201,24 +299,31 @@ public class ClientThread extends Thread{
 				else if(stt == ORDER_REQUEST) {
 					String idkhachhang = in.readUTF();
 			
-					List<MuaHang> listDH = (List<MuaHang>) ois.readObject();
+					int Size = in.readInt();
+					System.out.println(Size);
+					List<MuaHang> list = new ArrayList<>();
+					for(int i=0;i<Size;i++) {
+						String id = in.readUTF();
+						int soluong = in.readInt();
+						long dongia = in.readLong();
+						
+						MuaHang m = new MuaHang(id, soluong, dongia);
+						list.add(m);
+					}
 			
 					SanPham sp = new SanPham();
-					//String idnhanvien = login.getMainFrame().id;
 					String idhoadon = "HD"+sp.indexOfBill;
 					
 					Timestamp date = new Timestamp(new Date().getTime());
-					//if(db.addBill(idhoadon, idkhachhang, idnhanvien, date, listDH)) {
-						//login.getMainFrame().getFuncBillPanel().getBtnRefresh().doClick();
+					
 						
-					if(db.addWait(idhoadon,idkhachhang,date,listDH)) {	
+					if(db.addWait(idhoadon,idkhachhang,date,list)) {	
 						out.writeBoolean(true);
-
-						
 						sp.indexOfBill++;
-						
 						IOFile io = new IOFile();
 						io.writeFile();
+						
+						login.getMainFrame().getFuncWaitPanel().getBtnRefresh().doClick();
 					}
 					else {
 						out.writeBoolean(false);
@@ -243,6 +348,29 @@ public class ClientThread extends Thread{
 					out.writeInt(count);
 					out.flush();
 							
+				}
+				else if(stt == GET_HISTORY) {
+					String idkhachhang = in.readUTF();
+					
+					List<HistoryWait> list = db.getHistory(idkhachhang);
+					
+					out.writeInt(list.size());
+					out.flush();
+					
+					for(int i=0;i<list.size();i++) {
+						
+						out.writeUTF(list.get(i).getName());
+						out.flush();
+						
+						out.writeInt(list.get(i).getSoLuong());
+						out.flush();
+						
+						out.writeUTF(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(list.get(i).getNgayMua()));
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTrangthai());
+						out.flush();
+					}
 				}
 				
 			} catch (IOException e) {

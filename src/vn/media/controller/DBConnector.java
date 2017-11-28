@@ -7,16 +7,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import vn.media.models.DiaNhac;
 import vn.media.models.DiaPhim;
+import vn.media.models.Fee;
 import vn.media.models.HoaDon;
 import vn.media.models.KhachHang;
 import vn.media.models.MuaHang;
 import vn.media.models.NhanVien;
+import vn.media.models.Paid;
 import vn.media.models.Sach;
+import vn.media.serialization.HistoryWait;
 
 public class DBConnector {
 	private Connection conn;
@@ -164,7 +169,21 @@ public class DBConnector {
 		}
 	}
 	
-	
+	public void editSalary(String username, long newSalary) {
+		conn = getConnection();
+		try {
+			int result = stm
+					.executeUpdate("UPDATE nhanvien SET luong =" + newSalary + " WHERE username='" + username + "';");
+			if (result > 0) {
+				System.out.println("Edit salary");
+			}
+			
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println("Connection failed !");
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/*					STAFF							*/
@@ -541,10 +560,10 @@ return false;
 		return null;
 	}
 	
-	public long getCoinCus(String username) {
+	public long getCoinCus(String id) {
 		conn = getConnection();
 		try {
-			rs = stm.executeQuery("SELECT coin FROM khachhang WHERE username='"+username+"';");
+			rs = stm.executeQuery("SELECT coin FROM khachhang WHERE id='"+id+"';");
 			if(rs.next()) {
 				conn.close();
 				return rs.getLong(1);
@@ -563,10 +582,11 @@ return false;
 		conn = getConnection();
 		
 		try {
+			System.out.println("coin db: "+ coin);
 			int r = stm.executeUpdate("UPDATE khachhang SET coin = "+coin+" WHERE username = '"+username+"';");
 			conn.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("UPDATE coin from db");
 			e.printStackTrace();
 		}
 	}
@@ -1290,7 +1310,7 @@ conn = getConnection();
 		conn = getConnection();
 		List<HoaDon> listHD = new ArrayList<>();
 		try {
-			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Hoàn tất' LIMIT 20 OFFSET "+20*page+";");
+			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Hoàn tất' ORDER BY ngayxuly DESC LIMIT 20 OFFSET "+20*page+";");
 			while(rs.next()) {
 				String idhoadon 	= rs.getString("id");
 				String idkhachhang 	= rs.getString("idkhachhang");
@@ -1315,7 +1335,7 @@ conn = getConnection();
 conn = getConnection();
 		
 		try {
-			rs = stm.executeQuery("SELECT COUNT(*) FROM hoadon WHERE trangthai = 'Hoàn tất';");
+			rs = stm.executeQuery("SELECT COUNT(*) FROM hoadon WHERE trangthai = 'Hoàn tất';");
 			if(rs.next()) {
 				return rs.getInt("count");
 			}
@@ -1460,7 +1480,7 @@ conn = getConnection();
 		conn = getConnection();
 		List<HoaDon> listHD = new ArrayList<>();
 		try {
-			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Đang xử lý' LIMIT 20 OFFSET "+20*page+";");
+			rs = stm.executeQuery("SELECT * FROM hoadon WHERE trangthai = 'Đang xử lý'  ORDER BY ngaymua DESC LIMIT 20 OFFSET "+20*page+";");
 			while(rs.next()) {
 				String idhoadon 	= rs.getString("id");
 				String idkhachhang 	= rs.getString("idkhachhang");
@@ -1500,7 +1520,7 @@ conn = getConnection();
 		Timestamp date = new Timestamp(new Date().getTime());
 		
 		try {
-			stm.executeUpdate("UPDATE hoadon SET idnhanvien = '"+idnhanvien+"', trangthai = 'Hoàn tất', ngayxuly = '"+date+"' WHERE id ='"+idhoadon+"' ;  ");
+			stm.executeUpdate("UPDATE hoadon SET idnhanvien = '"+idnhanvien+"', trangthai = 'Hoàn tất', ngayxuly = '"+date+"' WHERE id ='"+idhoadon+"' ;  ");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1508,6 +1528,451 @@ conn = getConnection();
 		
 	}
 	
+	/*								FEE							*/
 	
+	public boolean addFee(Fee fee) {
+		conn = getConnection();
+		try {
+			String query;
+
+			query = "INSERT INTO fee VALUES ('" + fee.getFeeName() + "',"
+					+ fee.getFeeValue() + "," + fee.getFeeCycle() + ",'" + fee.getLastRequest() + "');";
+			stm.executeUpdate(query);
+			conn.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean addPaid(Paid paid) {
+		conn = getConnection();
+		try {
+			String query;
+			if (paid.getPaidTime() != null) {
+				query = "insert into paid values ('" + paid.getID() + "','"
+						+ paid.getFeeName() + "'," + paid.getStatus() + ",'" + paid.getRequestTime() + "','"
+						+ paid.getPaidTime() + "',"+paid.getFeeValue()+");";
+				stm.executeUpdate(query);
+			} else {
+				query = "insert into paid(id,feename,status,requesttime,feevalue) values ('" + paid.getID() + "','"
+						+ paid.getFeeName() + "'," + paid.getStatus() + ",'" + paid.getRequestTime() + "',"+paid.getFeeValue()+");";
+				stm.executeUpdate(query);
+			}
+			conn.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public List<Fee> getAllFee(int page) {
+		conn = getConnection();
+		List<Fee> result = new ArrayList<>();
+		try {
+			String query = "select * from fee LIMIT 20 OFFSET "+page*20+";";
+			rs = stm.executeQuery(query);
+			while (rs.next()) {
+				String feeName = rs.getString("feename");
+				long feeValue = rs.getLong("feevalue");
+				int feeCycle = rs.getInt("feecycle");
+				Timestamp time = rs.getTimestamp("requesttime");
+				result.add(new Fee(feeName, feeValue, feeCycle, time));
+			}
+			System.out.println("get all fees");
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public Fee getFee(String feeName) {
+		conn = getConnection();
+		try {
+			String query = "select * from fee where feeName='" + feeName + "';";
+			rs = stm.executeQuery(query);
+			if (!rs.next())
+				return null;
+			String feename = rs.getString("feename");
+			long feevalue = rs.getLong("feevalue");
+			int feeCycle = rs.getInt("feecycle");
+			Timestamp time = rs.getTimestamp("requesttime");
+			
+			System.out.println("Get fee from DB");
+			conn.close();
+			return new Fee(feename, feevalue, feeCycle, time);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void updateFee(Fee bk) {
+		conn =  getConnection();
+		try {
+			String query = "update fee set feename='" + bk.getFeeName() + "'," + " feevalue=" + bk.getFeeValue() + ","
+					+ "  feecycle=" + bk.getFeeCycle() + "," + "requesttime='" + bk.getLastRequest() + "'"
+					+ " where feename='" + bk.getFeeName() + "';";
+			stm.executeUpdate(query);
+			conn.close();
+			System.out.println("update fee");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public int getCountFee() {
+		conn = getConnection();
+				
+				try {
+					rs = stm.executeQuery("SELECT COUNT(*) FROM fee;");
+					if(rs.next()) {
+						return rs.getInt("count");
+					}
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return 0;
+	}
+	
+	public int getCountPaid() {
+		conn = getConnection();
+				
+				try {
+					rs = stm.executeQuery("SELECT COUNT(*) FROM paid;");
+					if(rs.next()) {
+						return rs.getInt("count");
+					}
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return 0;
+	}
+	
+	
+	public void deleteFee(String feeName) {
+		conn = getConnection();
+		try {
+			String query = "delete from paid where feename='" + feeName + "';";
+			stm.executeUpdate(query);
+			query = "delete from fee where feename='" + feeName + "';";
+			stm.executeUpdate(query);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<HistoryWait> getHistory(String idkhachhang) {
+		conn = getConnection();
+		List<HistoryWait> list = new ArrayList<>();
+		
+		String sql = "select sp.tensp,cthd.soluong,hd.ngaymua,hd.trangthai " + 
+				"from sanpham as sp,chitiethoadon as cthd,hoadon as hd " + 
+				"where sp.id = cthd.idsanpham and cthd.idhoadon = hd.id and hd.idkhachhang = '"+idkhachhang+"' "
+				+ "order by hd.ngaymua desc;";
+		try {
+			rs = stm.executeQuery(sql);
+			while(rs.next()) {
+				String name = rs.getString("tensp");
+				int soluong = rs.getInt("soluong");
+				Timestamp date = rs.getTimestamp("ngaymua");
+				String trangthai = rs.getString("trangthai");
+				
+				HistoryWait h =  new HistoryWait(name, soluong, date, trangthai);
+				list.add(h);
+			}
+			conn.close();
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+
+	public List<Fee> getAllFee() {
+		conn = getConnection();
+		List<Fee> result = new ArrayList<>();
+		try {
+			String query = "select * from fee;";
+			rs = stm.executeQuery(query);
+			while (rs.next()) {
+				String feeName = rs.getString("feename");
+				long feeValue = rs.getLong("feevalue");
+				int feeCycle = rs.getInt("feecycle");
+				Timestamp time = rs.getTimestamp("requesttime");
+				result.add(new Fee(feeName, feeValue, feeCycle, time));
+			}
+			System.out.println("get all fees");
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public List<Paid> getAllPaid(int page) {
+		conn = getConnection();
+		List<Paid> result = new ArrayList<>();
+		try {
+			String query = "select * from paid order by status asc LIMIT 20 OFFSET "+page*20+";";
+			rs = stm.executeQuery(query);
+			while (rs.next()) {
+				String id = rs.getString("id");
+				String feeName = rs.getString("feename");
+				int status = rs.getInt("status");
+				long feeValue = rs.getLong("feevalue");
+				Timestamp requestTime = rs.getTimestamp("requesttime");
+				Timestamp paidTime = rs.getTimestamp("paidtime");
+				
+				result.add(new Paid(id, feeName, status, feeValue, requestTime, paidTime));
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public Paid getPaid(String id) {
+		conn = getConnection();
+		try {
+			String query = "select * from paid where id ='" + id + "';";
+			rs = stm.executeQuery(query);
+			if (!rs.next())
+				return null;
+			String feename = rs.getString("feeName");
+			long feevalue = rs.getLong("feeValue");
+			int status = rs.getInt("status");
+			Timestamp request = rs.getTimestamp("requestTime");
+			Timestamp paidti = rs.getTimestamp("paidTime");
+			conn.close();
+			return new Paid(id, feename, status, feevalue, request, paidti);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void paidPaid(Paid paid) {
+		conn = getConnection();
+		try {
+			Date time = new Date();
+			@SuppressWarnings("deprecation")
+		
+			String query = "update paid set status=1 " + ",requesttime='" + paid.getRequestTime() + "',"
+					+ " paidtime='" + new Timestamp(time.getTime()) + "'" + " where id='" + paid.getID() + "';";
+			stm.executeUpdate(query);
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Date getMinDateBill(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
+		
+		try {
+			String query="select min(ngayxuly) from hoadon where ngayxuly>='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Date getMaxDateBill(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
+		try {
+			String query="select max(ngayxuly) from hoadon where ngayxuly<='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Date getMinDateBillByMonth(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), 1, 0, 0, 0, 0);
+	
+		try {
+			String query="select min(ngayxuly) from hoadon where ngayxuly>='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Date getMaxDateBillByMonth(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), 31, 0, 0, 0, 0);
+		try {
+			String query="select max(ngayxuly) from hoadon where ngayxuly<='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Date getMinDateBillByYear(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(), 1,1, 0, 0, 0, 0);
+		System.out.println(time1);
+		try {
+			String query="select min(ngayxuly) from hoadon where ngayxuly>='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Date getMaxDateBillByYear(Date one) {
+		conn = getConnection();
+		Timestamp time1 = new Timestamp(one.getYear(),12,31 ,0, 0, 0, 0);
+		try {
+			String query="select max(ngayxuly) from hoadon where ngayxuly<='"+time1+"' and trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Date getMinDateBill() {
+		conn = getConnection();
+		try {
+			String query="select min(ngayxuly) from hoadon where trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public Date getMaxDateBill() {
+		conn = getConnection();
+		
+		try {
+			String query="select max(ngayxuly) from hoadon where trangthai = 'Hoàn tất';";
+			rs=stm.executeQuery(query);
+			if(rs.next()) {
+				Timestamp time = rs.getTimestamp(1);
+				conn.close();
+				return new Date(time.getYear(), time.getMonth(), time.getDate());
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public long getDoanhThu(Date one,Date two) {
+		conn = getConnection();
+		
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 0, 0, 0, 0);
+		
+		try {
+			String query ="select sum(soluong*(sanpham.giaban)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngaymua >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) 
+				{
+				System.out.println(rs.getLong(1));
+				return rs.getLong(1);}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	public long getLoiNhuan(Date one,Date two) {
+		conn = getConnection();
+	
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 0, 0, 0, 0);
+		try {
+			long productmoney = 0,feemoney = 0;
+		
+					
+			String query ="select sum(soluong*(sanpham.giaban-sanpham.giamua)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngaymua >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) productmoney= rs.getLong(1);
+			
+			
+			query = "select sum(feevalue) from paid where status= 1 "+"and paidtime >='"+time1+"' and paidtime <='"+time2+ "'; ";
+			rs=stm.executeQuery(query);
+			if(rs.next()) feemoney= rs.getLong(1);
+			return productmoney-feemoney;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	
 }

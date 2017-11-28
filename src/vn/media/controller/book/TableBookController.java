@@ -24,6 +24,7 @@ private JButton btnBack,btnNext;
 				int page =mainFrame.getPageBook();
 				
 				if( page > 0) {
+					System.out.println(page);
 					mainFrame.setPageBook(page-1);
 					List<Sach> list = db.getAllBook(page-1);
 					mainFrame.getTabbedProduct().getTableBookPanel().updateTable(list);
@@ -41,6 +42,7 @@ private JButton btnBack,btnNext;
 				int page = mainFrame.getPageBook();
 				
 				if(page< db.getCountBook()/20 ) {
+					System.out.println(page);
 					mainFrame.setPageBook(page+1);
 					List<Sach> list = db.getAllBook(page+1);
 					mainFrame.getTabbedProduct().getTableBookPanel().updateTable(list);

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,6 +20,7 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	private JButton btnXoa;
 	private JButton btnTimKiem;
 	private JButton btnRefresh;
+	private JButton btnLuong;
 	
 	private JTextField tfSearch;
 	private TableStaffPanel tablePanel;
@@ -36,6 +38,7 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 
 	private JPanel createSearchPanel() {
 		btnTimKiem  = createButtons("TÌM KIẾM");
+		btnTimKiem.setIcon(new ImageIcon(getClass().getResource("/search.png")));
 		cbType = new JComboBox<>(s);
 		tfSearch = new JTextField(30);
 		JPanel panel = new JPanel();
@@ -56,18 +59,26 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 	private JPanel createActionPanel() {
 		JPanel panel = new JPanel();
 
-		panel.setLayout(new GridLayout(1, 5, 10, 10));
+		panel.setLayout(new GridLayout(1, 6, 10, 10));
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnThem     = createButtons("THÊM");
 		btnSua      = createButtons("ĐỔI MẬT KHẨU");
 		btnXoa      = createButtons("XÓA");
 		btnRefresh 	= createButtons("REFRESH");
+		btnLuong 	= createButtons("SỬA LƯƠNG");
+		
+		btnXemTatCa.setIcon(new ImageIcon(getClass().getResource("/show_all.png")));
+		btnThem.setIcon(new ImageIcon(getClass().getResource("/add.png")));
+		btnSua.setIcon(new ImageIcon(getClass().getResource("/edit.png")));
+		btnXoa.setIcon(new ImageIcon(getClass().getResource("/delete.png")));
+		btnRefresh.setIcon(new ImageIcon(getClass().getResource("/refresh.png")));
 		
 		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);
 		panel.add(btnThem);
 		panel.add(btnSua);
+		panel.add(btnLuong);
 		panel.add(btnXoa);
 		
 		return panel;
@@ -154,6 +165,16 @@ public class FuncStaffPanel extends JPanel implements ActionListener{
 
 	public void setTfSearch(JTextField tfSearch) {
 		this.tfSearch = tfSearch;
+	}
+
+
+	public JButton getBtnLuong() {
+		return btnLuong;
+	}
+
+
+	public void setBtnLuong(JButton btnLuong) {
+		this.btnLuong = btnLuong;
 	}
 
 

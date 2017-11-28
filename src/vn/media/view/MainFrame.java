@@ -5,22 +5,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.DiaNhac;
 import vn.media.models.DiaPhim;
+import vn.media.models.Fee;
 import vn.media.models.HoaDon;
 import vn.media.models.KhachHang;
 import vn.media.models.NhanVien;
+import vn.media.models.Paid;
 import vn.media.models.Sach;
+import vn.media.models.Store;
 import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
 import vn.media.view.book.FuncBookPanel;
-import vn.media.view.book.TableBookPanel;
 import vn.media.view.customer.FuncCusPanel;
 import vn.media.view.customer.TableCusPanel;
+import vn.media.view.fee.FuncFeePanel;
+import vn.media.view.fee.TableFeePanel;
 import vn.media.view.movies.FuncMoviesPanel;
 import vn.media.view.music.FuncMusicPanel;
 import vn.media.view.staff.FuncStaffPanel;
@@ -29,51 +34,57 @@ import vn.media.view.wait.FuncWaitPanel;
 import vn.media.view.wait.TableWaitPanel;
 
 public class MainFrame extends JFrame {
-	private TopInfoPanel topInfoPanel;
-	private ChoicePanel choicePanel;
+	private TopInfoPanel 	topInfoPanel;
+	private ChoicePanel 	choicePanel;
 
-	private List<Sach> listBook;
-	private List<DiaPhim> listMovie;
-	private List<DiaNhac> listMusic;
+	private List<Sach> 		listBook;
+	private List<DiaPhim> 	listMovie;
+	private List<DiaNhac> 	listMusic;
 
-	private List<NhanVien> listStaff;
+	private List<NhanVien> 	listStaff;
 	private List<KhachHang> listCus;
 
-	private List<HoaDon> listBill;
-	private List<HoaDon> listWait;
+	private List<HoaDon> 	listBill;
+	private List<HoaDon> 	listWait;
+	private List<Fee>		listFee;
+	private List<Paid>		listPaid;
 	
 	private TableStaffPanel tableStaffPanel;
-	private TableCusPanel tableCusPanel;
-	private TableBillPanel tableBillPanel;
-	private TableWaitPanel tableWaitPanel;
+	private TableCusPanel 	tableCusPanel;
+	private TableBillPanel 	tableBillPanel;
+	private TableWaitPanel 	tableWaitPanel;
+	private TableFeePanel  	tableFeePanel;
 	
-	private FuncCusPanel funcCusPanel;
-	private FuncStaffPanel funcStaffPanel;
-	private FuncBookPanel funcBookPanel;
+	private FuncCusPanel 	funcCusPanel;
+	private FuncStaffPanel 	funcStaffPanel;
+	private FuncBookPanel 	funcBookPanel;
 	private FuncMoviesPanel funcMoviesPanel;
-	private FuncMusicPanel funcMusicPanel;
-	private FuncWaitPanel funcWaitPanel;
-	
+	private FuncMusicPanel 	funcMusicPanel;
+	private FuncWaitPanel 	funcWaitPanel;
+	private FuncFeePanel 	funcFeePanel;
+	private FuncStatisPanel funcStatisPanel;
 
+	private FuncBillPanel 	funcBillPanel;
+	private TabbedProduct 	tabbedProduct;
 
-private FuncBillPanel funcBillPanel;
-	private TabbedProduct tabbedProduct;
-
-	private MenuBarView menuBarView;
+	private MenuBarView 	menuBarView;
 
 	private JPanel mainPanel;
 	private JPanel tablePanel;
 	private JPanel funcPanel;
+	
 	private DBConnector db;
+	
 	public String id;
 	public String username;
+	private Store store;
 	
 	private int pageStaff;
 	private int pageCus;
 	private int pageBill;
 	private int pageWait;
-	
-	
+	private int pageFee;
+	private int pagePaid;
 
 	private int pageBook;
 	private int pageMovies;
@@ -95,9 +106,10 @@ private FuncBillPanel funcBillPanel;
 			"Phùng Đắc Cam","Nguyễn Kim Giao","Tạ Văn Bĩnh","Lê Đăng Hà","Nguyễn Hữu Tâm","Lê Minh Triết","Vũ Bình Minh","Bùi Văn A"};
 	
 	
-	public MainFrame(String username, DBConnector db) {
+	public MainFrame(String username, DBConnector db,Store store) {
 		this.db = db;
 		this.username =username;
+		this.store = store;
 		
 		NhanVien nv = db.getStaff(username);
 		this.id = nv.getId();
@@ -107,7 +119,7 @@ private FuncBillPanel funcBillPanel;
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
 		setTitle("MediaOne (Server)");
-
+		setIconImage(new ImageIcon(getClass().getResource("/store.png")).getImage());
 		setResizable(true);
 		/* NORTH MAINFRAME */
 		topInfoPanel = new TopInfoPanel(username, db);
@@ -143,19 +155,14 @@ private FuncBillPanel funcBillPanel;
 		
 		funcWaitPanel = new FuncWaitPanel();
 		tableWaitPanel = new TableWaitPanel();
+		funcStatisPanel = new FuncStatisPanel(this,db);
+		funcFeePanel	= new FuncFeePanel();
+		tableFeePanel	= new TableFeePanel();
 		/* MENU PANEL */
 		menuBarView = new MenuBarView();
 
 		//setJMenuBar(menuBarView);
 
-		
-		pageStaff = tableStaffPanel.getCurrentPage();
-		pageCus   = tableCusPanel.getCurrentPage();
-		pageBook  = tabbedProduct.getTableBookPanel().getCurrentPage();
-		pageMovies = tabbedProduct.getTableMoviesPanel().getCurrentPage();
-		pageMusic = tabbedProduct.getTableMusicPanel().getCurrentPage();
-		
-		
 		
 		add(topInfoPanel, BorderLayout.NORTH);
 		add(choicePanel, BorderLayout.WEST);
@@ -183,6 +190,11 @@ private FuncBillPanel funcBillPanel;
 		listWait = db.getAllWait(0);
 		pageWait = 0;
 
+		listFee  = db.getAllFee(0);
+		pageFee  = 0;
+		
+		listPaid = db.getAllPaid(0);
+		pagePaid = 0;
 		
 		initTableProduct();
 		initTableStaff();
@@ -190,6 +202,7 @@ private FuncBillPanel funcBillPanel;
 		initRefresh();
 		initTableBill();
 		initTableWait();
+		initTableFee();
 		setVisible(true);
 		
 	}
@@ -230,6 +243,10 @@ private FuncBillPanel funcBillPanel;
 
 	public void initTableBill() {
 		tableBillPanel.updateTable(listBill);
+	}
+	
+	public void initTableFee() {
+		tableFeePanel.updateTable(listFee);
 	}
 	
 	public void initTableWait() {
@@ -475,6 +492,14 @@ private FuncBillPanel funcBillPanel;
 		this.listBook = listBook;
 	}
 
+	public FuncStatisPanel getFuncStatisPanel() {
+		return funcStatisPanel;
+	}
+
+	public void setFuncStatisPanel(FuncStatisPanel funcStatisPanel) {
+		this.funcStatisPanel = funcStatisPanel;
+	}
+
 	public List<DiaPhim> getListMovie() {
 		return listMovie;
 	}
@@ -505,6 +530,22 @@ private FuncBillPanel funcBillPanel;
 		return pageMovies;
 	}
 
+	public List<Paid> getListPaid() {
+		return listPaid;
+	}
+
+	public void setListPaid(List<Paid> listPaid) {
+		this.listPaid = listPaid;
+	}
+
+	public int getPagePaid() {
+		return pagePaid;
+	}
+
+	public void setPagePaid(int pagePaid) {
+		this.pagePaid = pagePaid;
+	}
+
 	public void setPageMovies(int pageMovies) {
 		this.pageMovies = pageMovies;
 	}
@@ -533,6 +574,38 @@ private FuncBillPanel funcBillPanel;
 		return listStaff;
 	}
 
+	public List<Fee> getListFee() {
+		return listFee;
+	}
+
+	public void setListFee(List<Fee> listFee) {
+		this.listFee = listFee;
+	}
+
+	public TableFeePanel getTableFeePanel() {
+		return tableFeePanel;
+	}
+
+	public void setTableFeePanel(TableFeePanel tableFeePanel) {
+		this.tableFeePanel = tableFeePanel;
+	}
+
+	public FuncFeePanel getFuncFeePanel() {
+		return funcFeePanel;
+	}
+
+	public void setFuncFeePanel(FuncFeePanel funcFeePanel) {
+		this.funcFeePanel = funcFeePanel;
+	}
+
+	public int getPageFee() {
+		return pageFee;
+	}
+
+	public void setPageFee(int pageFee) {
+		this.pageFee = pageFee;
+	}
+
 	public void setListStaff(List<NhanVien> listStaff) {
 		this.listStaff = listStaff;
 	}
@@ -543,6 +616,14 @@ private FuncBillPanel funcBillPanel;
 
 	public void setListCus(List<KhachHang> listCus) {
 		this.listCus = listCus;
+	}
+
+	public Store getStore() {
+		return store;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
 	}
 
 	public List<HoaDon> getListBill() {

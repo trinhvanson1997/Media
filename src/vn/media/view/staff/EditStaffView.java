@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import vn.media.controller.DBConnector;
 import vn.media.models.NhanVien;
+import vn.media.view.MainFrame;
 
 public class EditStaffView extends JDialog implements ActionListener{
 	private static final int WARNING_MESSAGE = 0;
@@ -28,16 +30,18 @@ public class EditStaffView extends JDialog implements ActionListener{
 	private JButton btnThem, btnHuy;
 	private DBConnector db;
 	private TableStaffPanel tablePanel;
-
+	private MainFrame mainFrame;
+String oldname;
 	private NhanVien nv;
 	
-	public EditStaffView(DBConnector db, NhanVien nv) {
+	public EditStaffView(MainFrame mainFrame,DBConnector db, NhanVien nv) {
 		this.db = db;
 		this.tablePanel=tablePanel;
 		this.nv = nv;
+		this.mainFrame = mainFrame;
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setSize(400, 300);
+		setSize(500, 300);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout(10, 10));
 		setTitle("Thông tin nhân viên");
@@ -51,8 +55,8 @@ public class EditStaffView extends JDialog implements ActionListener{
 		lbUsername = new JLabel("Username");
 		lbPassword = new JLabel("Password");
 		
-		tfID       = new JTextField(15); 	tfID.setText(nv.getId()); tfID.setEditable(false);
-		tfHoTen    = new JTextField(15);	tfHoTen.setText(nv.getHoTen());
+		tfID       = new JTextField(15); 	tfID.setText(nv.getId()); tfID.setEditable(false); 
+		tfHoTen    = new JTextField(15);	tfHoTen.setText(nv.getHoTen());		 
 		tfNgaySinh = new JTextField(15);	tfNgaySinh.setText(new SimpleDateFormat("dd/MM/yyyy").format(nv.getNgaySinh()));
 		tfDiachi   = new JTextField(15);	tfDiachi.setText(nv.getDiaChi());
 		tfSDT      = new JTextField(15);	tfSDT.setText(nv.getsDT());
@@ -108,7 +112,25 @@ public class EditStaffView extends JDialog implements ActionListener{
 					db.editStaff(tfID.getText(), tfHoTen.getText(), date,
 							tfDiachi.getText(), tfSDT.getText(), nv.getLuong(),tfUsername.getText(),tfPassword.getText());
 					dispose();
+					
+					List<NhanVien> list = db.getAllStaff(mainFrame.getPageStaff());
+					mainFrame.setListStaff(list);
+					mainFrame.getTableStaffPanel().updateTable(list);
+					
 					JOptionPane.showMessageDialog(null, "Sửa thông tin thành công");
+				if(tfHoTen.getText().compareTo(nv.getHoTen()) != 0) {
+					mainFrame.getTopInfoPanel().remove(mainFrame.getTopInfoPanel().getComponent(0));
+					JLabel lbUser = new JLabel("Xin chào : "+tfHoTen.getText());
+					lbUser.setHorizontalAlignment(JLabel.CENTER);
+				
+					
+					
+					mainFrame.getTopInfoPanel().add(lbUser,BorderLayout.WEST);
+					
+					mainFrame.getTopInfoPanel().validate();
+					mainFrame.getTopInfoPanel().repaint();
+					
+				}
 				
 					 
 				} catch (NumberFormatException e1) {

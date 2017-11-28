@@ -9,12 +9,13 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 import vn.media.models.SanPham;
+import vn.media.models.Store;
 
 public class IOFile {
-	private static String path="E:/EclispeOxygen/Media/src/data.txt";
+	private static String path="D:/EclispeOxygen/Media/src/data.txt";
 	private static File f = new File(path);
 	public SanPham sp;
-	
+	public Store store;
 	
 	public IOFile() {
 		
@@ -32,6 +33,8 @@ public class IOFile {
 			pw.println(sp.indexOfMovies);
 			pw.println(sp.indexOfMusic);
 			pw.println(sp.indexOfBill);
+			pw.println(sp.indexOfPaid);
+			pw.println(store.totalMoney);
 			
 			pw.close();
 		} catch (IOException e) {
@@ -51,6 +54,9 @@ public class IOFile {
 			sp.indexOfMovies = Integer.parseInt(inp.nextLine());
 			sp.indexOfMusic = Integer.parseInt(inp.nextLine());
 			sp.indexOfBill = Integer.parseInt(inp.nextLine());
+			sp.indexOfPaid = Integer.parseInt(inp.nextLine());
+			store.totalMoney = Long.parseLong(inp.nextLine());
+			
 			inp.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Failed to open file to read");

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,6 +36,7 @@ public class FuncCusPanel extends JPanel implements ActionListener{
 	}
 	private JPanel createSearchPanel() {
 		btnTimKiem  = createButtons("TÌM KIẾM");
+		btnTimKiem.setIcon(new ImageIcon(getClass().getResource("/search.png")));
 		cbType = new JComboBox<>(s);
 		tfSearch = new JTextField(30);
 		JPanel panel = new JPanel();
@@ -59,7 +61,13 @@ public class FuncCusPanel extends JPanel implements ActionListener{
 		
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnSua      = createButtons("ĐỔI MẬT KHẨU");
-btnRefresh 	= createButtons("REFRESH");
+		btnRefresh 	= createButtons("REFRESH");
+		
+
+		btnXemTatCa.setIcon(new ImageIcon(getClass().getResource("/show_all.png")));
+		btnSua.setIcon(new ImageIcon(getClass().getResource("/edit.png")));
+		
+		btnRefresh.setIcon(new ImageIcon(getClass().getResource("/refresh.png")));
 		
 		panel.add(btnRefresh);
 		
