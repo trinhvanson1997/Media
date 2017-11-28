@@ -713,6 +713,159 @@ conn = getConnection();
 		return null;
 	}
 	
+
+	public List<Sach> getBookByNameAndPublisher(String name,String publisher){
+		List<Sach> list = new ArrayList<>();
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach WHERE tensp = '"+name+"' and sanpham.id = sach.id and ("+convertNXBToSQL(publisher)+");");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Sach> getBookByNameAndAuthor(String name,String author){
+		List<Sach> list = new ArrayList<>();
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE tensp = '"+name+"' and sanpham.id = sach.id and "
+							+ " sach.id = sach_tacgia.id and ("+convertTacGiaToSQL(author)+");");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Sach> getBookByPublisherAndAuthor(String publisher,String author){
+		List<Sach> list = new ArrayList<>();
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE  sanpham.id = sach.id and "
+							+ " sach.id = sach_tacgia.id and ("+convertNXBToSQL(publisher) +") and ("+convertTacGiaToSQL(author)+");");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Sach> getBookByNameAndPublisherAndAuthor(String name,String publisher,String author){
+		List<Sach> list = new ArrayList<>();
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE  sanpham.id = sach.id and "
+							+ " sach.id = sach_tacgia.id and tensp = '"+name+"' and ("+convertNXBToSQL(publisher) +") and ("+convertTacGiaToSQL(author)+");");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String convertNXBToSQL(String s) {
+		String rs = "nxb = '";
+		for(int i=0;i<s.length();i++) {
+			if(s.charAt(i) == ',') {
+				rs+= "' or nxb = '";
+			}
+			else rs += s.charAt(i);
+		}
+		rs += "'";
+		return rs;
+	}
+	
+	public String convertTacGiaToSQL(String s) {
+		String rs = "tacgia = '";
+		for(int i=0;i<s.length();i++) {
+			if(s.charAt(i) == ',') {
+				rs+= "' or tacgia = '";
+			}
+			else rs += s.charAt(i);
+		}
+		rs += "'";
+		return rs;
+	}
+	
+	
 	public int getCountBook() {
 conn = getConnection();
 		
@@ -1974,5 +2127,11 @@ conn = getConnection();
 		}
 		return 0;
 	}
+	
+	public static void main(String[] args) {
+		DBConnector db = new DBConnector();
+		db.getBookByNameAndAuthor("Học máy", "Bùi Văn A");
+	}
+	
 	
 }
