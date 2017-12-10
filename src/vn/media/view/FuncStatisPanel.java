@@ -63,7 +63,9 @@ public class FuncStatisPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getSource() == btnXem) {
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat formatDMY = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat formatMY = new SimpleDateFormat("MM/yyyy");
+			SimpleDateFormat formatY = new SimpleDateFormat("yyyy");
 			int choice = cbType.getSelectedIndex();
 			
 		
@@ -72,8 +74,8 @@ public class FuncStatisPanel extends JPanel implements ActionListener{
 			Date sau = null;
 			if(choice == 0) {
 			try {
-				 time1 = db.getMinDateBill(format.parse(tfFrom.getText()));
-				 time2 = db.getMaxDateBill(format.parse(tfTo.getText()));
+				 time1 = db.getMinDateBill(formatDMY.parse(tfFrom.getText()));
+				 time2 = db.getMaxDateBill(formatDMY.parse(tfTo.getText()));
 			} catch (ParseException e) {
 			
 				e.printStackTrace();
@@ -81,8 +83,8 @@ public class FuncStatisPanel extends JPanel implements ActionListener{
 			}
 			else if(choice == 1) {
 				try {
-					 time1 = db.getMinDateBillByMonth(format.parse(tfFrom.getText()));
-					 time2 = db.getMaxDateBillByMonth(format.parse(tfTo.getText()));
+					 time1 = db.getMinDateBillByMonth(formatDMY.parse(tfFrom.getText()));
+					 time2 = db.getMaxDateBillByMonth(formatDMY.parse(tfTo.getText()));
 				} catch (ParseException e) {
 				
 					e.printStackTrace();
@@ -90,8 +92,8 @@ public class FuncStatisPanel extends JPanel implements ActionListener{
 			}
 			else if(choice == 2) {
 				try {
-					 time1 = db.getMinDateBillByYear(format.parse(tfFrom.getText()));
-					 time2 = db.getMaxDateBillByYear(format.parse(tfTo.getText()));
+					 time1 = db.getMinDateBillByYear(formatDMY.parse(tfFrom.getText()));
+					 time2 = db.getMaxDateBillByYear(formatDMY.parse(tfTo.getText()));
 				} catch (ParseException e) {
 				
 					e.printStackTrace();
@@ -103,33 +105,54 @@ public class FuncStatisPanel extends JPanel implements ActionListener{
 			if(choice == 0) {
 			calendar.add(Calendar.DATE, 1);
 			}
+			else if(choice == 1) {
+				calendar.add(Calendar.MONTH, 1);
+			}
+			else if(choice == 2) {
+				calendar.add(Calendar.YEAR, 1);
+			}
 			
 			time2 = calendar.getTime();
 			calendar.setTime(time1);
 			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-			while (time1.compareTo(time2) <= 0) {
+			JFreeChart lineChart = null;
+			while (time1.compareTo(time2) < 0) {
+				System.out.println("T1 : "+time1);
+				System.out.println("T2 : "+time2);
+				
 				calendar.setTime(time1);
 				
 				if(choice == 0) {
 					calendar.add(Calendar.DATE, 1);
+					 lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh) theo ngày".toUpperCase(), "NGÀY",
+							"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
+					 sau = calendar.getTime();
+						dataset.addValue(db.getDoanhThu(time1, sau), "Doanh thu", formatDMY.format(time1));
+						dataset.addValue(db.getLoiNhuan(time1, sau), "Lợi nhuận", formatDMY.format(time1));
 					}
 					else if(choice == 1) {
 						calendar.add(Calendar.MONTH, 1);
+						 lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh) theo tháng".toUpperCase(), "THÁNG",
+								"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
+						 sau = calendar.getTime();
+							dataset.addValue(db.getDoanhThuTheoThang(time1), "Doanh thu", formatMY.format(time1));
+							dataset.addValue(db.getLoiNhuanTheoThang(time1), "Lợi nhuận", formatMY.format(time1));
 					}
 					else if(choice == 2) {
 						calendar.add(Calendar.YEAR, 1);
+						 lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh) theo năm".toUpperCase(), "NĂM",
+								"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
+						 sau = calendar.getTime();
+							dataset.addValue(db.getDoanhThuTheoNam(time1), "Doanh thu", formatY.format(time1));
+							dataset.addValue(db.getLoiNhuanTheoNam(time1), "Lợi nhuận", formatY.format(time1));
 					}
 			
 			
-				 sau = calendar.getTime();
-				dataset.addValue(db.getDoanhThu(time1, sau), "Doanh thu", format.format(time1));
-				dataset.addValue(db.getLoiNhuan(time1, sau), "Lợi nhuận", format.format(time1));
+			
 
 				time1 = sau;
 			}
-			JFreeChart lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh)".toUpperCase(), "Ngày",
-					"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
-		
+			
 			ChartPanel panelChart = new ChartPanel(lineChart);
 			
 			JPanel tablePanel = mainFrame.getTablePanel();

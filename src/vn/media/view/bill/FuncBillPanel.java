@@ -21,6 +21,7 @@ public class FuncBillPanel extends JPanel implements ActionListener{
 	private JButton btnTimKiem;
 	private JButton btnRefresh;
 	private JButton btnThongTinChiTiet;
+	private JButton btnInPDF;
 	
 	private JTextField tfSearch;
 	private JComboBox<String> cbType;
@@ -64,6 +65,7 @@ public class FuncBillPanel extends JPanel implements ActionListener{
 		btnXemTatCa = createButtons("XEM TẤT CẢ");
 		btnRefresh 	= createButtons("REFRESH");
 		btnThongTinChiTiet = createButtons("CHI TIẾT ĐƠN HÀNG");
+		btnInPDF	= createButtons("IN HÓA ĐƠN");
 		
 		btnXemTatCa.setIcon(new ImageIcon(getClass().getResource("/log_out.png")));
 		btnThongTinChiTiet.setIcon(new ImageIcon(getClass().getResource("/info.png")));
@@ -73,7 +75,7 @@ public class FuncBillPanel extends JPanel implements ActionListener{
 		panel.add(btnRefresh);
 		panel.add(btnXemTatCa);
 		panel.add(btnThongTinChiTiet);
-		
+		panel.add(btnInPDF);
 		
 		return panel;
 	}
@@ -144,6 +146,12 @@ public class FuncBillPanel extends JPanel implements ActionListener{
 	}
 	public void setCbType(JComboBox<String> cbType) {
 		this.cbType = cbType;
+	}
+	public JButton getBtnInPDF() {
+		return btnInPDF;
+	}
+	public void setBtnInPDF(JButton btnInPDF) {
+		this.btnInPDF = btnInPDF;
 	}
 	public JButton getBtnThongTinChiTiet() {
 		return btnThongTinChiTiet;

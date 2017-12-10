@@ -12,6 +12,7 @@ import vn.media.models.HoaDon;
 import vn.media.models.MuaHang;
 import vn.media.view.MainFrame;
 import vn.media.view.wait.TableWaitPanel;
+import vn.media.view.wait.WaitDetailView;
 
 public class HandlingWait {
 	private JButton btnXuLy;
@@ -31,48 +32,49 @@ public class HandlingWait {
 				if (index >= 0) {
 					String idhoadon = (String) tableWaitPanel.getTable().getModel().getValueAt(index, 0);
 					HoaDon hd = db.getBill(idhoadon);
-					List<MuaHang> list = hd.getMuaHang();
-					for (int i = 0; i < list.size(); i++) {
-							if (list.get(i).getSoLuong() > db.getSoLuongTonKho(list.get(i).getIdSanPham())) {
-									flag = false;
+					WaitDetailView waitDetailView = new WaitDetailView(idhoadon, hd);
+					waitDetailView.getBtnXuly().addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							boolean flag = true;
+							List<MuaHang> list = hd.getMuaHang();
+							for (int i = 0; i < list.size(); i++) {
+									if (list.get(i).getSoLuong() > db.getSoLuongTonKho(list.get(i).getIdSanPham())) {
+											flag = false;
+									}
+								
 							}
-						
-					}
-					
-					if(flag) {
-						db.handlingWait(mainFrame.id,idhoadon);
-						
-//						long tienTamTinh=0;
-//						for(MuaHang m: list) {
-//							tienTamTinh += m.getDonGia()*m.getSoLuong();
-//						}
-//						
-//						System.out.println("Tien tam tinh: "+ tienTamTinh);
-//						System.out.println("id: "+hd.getIdKhachHang());
-//						long coin = db.getCoinCus(hd.getIdKhachHang()) - tienTamTinh;
-//						System.out.println("db.getcoin: "+ db.getCoinCus(hd.getIdKhachHang()));
-//						System.out.println("coin: "+coin);
-//						
-//						db.updateCoin(hd.getIdKhachHang(), coin);
-						
-						
-						for(MuaHang dh:list) {
-							String idsanpham = dh.getIdSanPham();
-							int soluong = db.getSoLuongTonKho(idsanpham) - dh.getSoLuong();
 							
-							db.updateNumberProduct(idsanpham,soluong);
+							if(flag) {
+								db.handlingWait(mainFrame.id,idhoadon);
+
+								for(MuaHang dh:list) {
+									String idsanpham = dh.getIdSanPham();
+									int soluong = db.getSoLuongTonKho(idsanpham) - dh.getSoLuong();
+									
+									db.updateNumberProduct(idsanpham,soluong);
+								}
+								
+								mainFrame.getFuncWaitPanel().getBtnRefresh().doClick();
+								
+								JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thành công !");
+								waitDetailView.dispose();
+								
+								mainFrame.getFuncBillPanel().getBtnRefresh().doClick();
+							}
+							else {JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thất bại do hết hàng !");
+							waitDetailView.dispose();
+							
+							}
+							
 						}
+					});
 						
-						mainFrame.getFuncWaitPanel().getBtnRefresh().doClick();
-						
-						JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thành công !");
-						mainFrame.getFuncBillPanel().getBtnRefresh().doClick();
-					}
-					else JOptionPane.showMessageDialog(null, "Xử lý đơn hàng thất bại do hết hàng !");
+				
 				} else
 					JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn hàng nào !");
 
 			}
 		});
-	}
-}
+}}

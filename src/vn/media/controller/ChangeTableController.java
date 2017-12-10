@@ -3,15 +3,16 @@ package vn.media.controller;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -24,15 +25,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import vn.media.common.IOFile;
-import vn.media.models.DiaNhac;
-import vn.media.models.NhanVien;
-import vn.media.models.SanPham;
 import vn.media.models.Store;
 import vn.media.view.ChoicePanel;
 import vn.media.view.FuncStatisPanel;
 import vn.media.view.LoginBox;
 import vn.media.view.MainFrame;
-import vn.media.view.ManagerInfoView;
 import vn.media.view.TabbedProduct;
 import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
@@ -46,13 +43,14 @@ import vn.media.view.movies.FuncMoviesPanel;
 import vn.media.view.movies.TableMoviesPanel;
 import vn.media.view.music.FuncMusicPanel;
 import vn.media.view.music.TableMusicPanel;
-import vn.media.view.staff.EditStaffView;
 import vn.media.view.staff.FuncStaffPanel;
 import vn.media.view.staff.TableStaffPanel;
 import vn.media.view.wait.FuncWaitPanel;
 import vn.media.view.wait.TableWaitPanel;
 
 public class ChangeTableController {
+	
+
 	private ChoicePanel choicePanel;
 	
 	private FuncStaffPanel 	funcStaffPanel;
@@ -88,21 +86,23 @@ public class ChangeTableController {
 	private IOFile ioFile = new IOFile();
 	private String type;
 	private String username;
+	private MainFrame mainFrame;
 	
+	public String tensach[] = {"Tiếng Việt","Xác suất thống kê","Tiếng anh chuyên ngành","Giáo dục công dân","Công nghệ",
+			"Tin học đại cương","Giải tích 1","Giải tích 2","Giải tích 3","Hóa học","Pháp luật đại cương","Chính trị học","Đường lối cách mạng của ĐCSVN"
+			,"Tư tưởng Hồ Chí Minh","Cơ sở dữ liệu","Toán cao cấp","AI","An toàn và bảo mật thông tin","Phân tích thiết kế hệ thống","Cuộc cách mạng một cọng rơm","Chí phèo"
+			,"CSDL nâng cao","Học máy","Nhập môn công nghệ phần mềm","Vật lý đại cương 1","Tiếng anh chuyên ngành"};
 	
-	public String tensach[] = {"Tiếng việt","Xác suất thống kê","Tiếng anh chuyên ngành","Giáo dục công dân","Công nghệ",
-			"Tin đại cương","Giải tích 1","Giải tích 2","Giải tích 3","Hóa học","Pháp luật đại cương","Chính trị học","Đường lối cách mạng"
-			,"Trí tuệ nhân tạo","Cơ sở dữ liệ","Toán cao cấp","AI","An toàn bảo mật thông tin"
-			,"CSDL nâng cao","Học máy","Nhập môn CNPM","Lý 1","Tiếng anh chuyên ngành"};
+	public String nxb[] = {"Thống kê","Lao động xã hội","Chính trị Quốc Gia","Thế Giới","Quân đội nhân dân","Y học","Văn hóa thông tin",
+			"Thông tấn","Khoa học và kỹ thuật","Y học và sức khỏe","Kim đồng","Bách khoa","Tuổi trẻ","Kinh tế"};
 	
-	public String nxb[] = {"Thống kê","Lao động xã hội","Chính trị Quốc gia","Thế giới","Quân đội nhân dân","Y học","Văn Hoá thông tin",
-			"Thông tấn","Khoa học và kỹ thuật","Y học và thể dục thể thao","Kim đồng","Bách khoa","Tuổi trẻ","Kinh tế"};
-	
-	public String tacgia[] = {"Jack ma","Hoàng Thúy Long","Nguyễn Chung Chính","Đặng Đức Trạch","Đặng Văn Ngữ","Nguyễn Đình Hường","Phạm Mạnh Hùng","Vũ Quang Bích","Đỗ Nguyên Phương","Nam Cao","Hamminton",
-			"Phùng Đắc Cam","Nguyễn Kim Giao","Tạ Văn Bĩnh","Lê Đăng Hà","Nguyễn Hữu Tâm","Lê Minh Triết","Vũ Bình Minh","Bùi Văn A"};
+	public String tacgia[] = {"Jack ma","Hoàng Thúy Long","Nguyễn Trung Chính","Đặng Đức Trạch","Phạm Văn Ngữ","Nguyễn Đình Hường","Phạm Mạnh Hùng","Vũ Quang Bích","Đỗ Nguyên Phương","Nam Cao",
+			"Phùng Đắc Cam","Nguyễn Kim Giao","Tạ Văn Bĩnh","Lê Đăng Hà","Nguyễn Hữu Tâm","Lê Triết","Vũ Bình Minh","Bùi Văn A"};
 	
 	
 	public ChangeTableController(MainFrame mainFrame,DBConnector db,Store store) {
+		this.mainFrame  = mainFrame;
+		
 		btnStaff 	= mainFrame.getChoicePanel().getBtnNhanVien();
 		btnCus 		= mainFrame.getChoicePanel().getBtnKhachHang();
 		btnProduct 	= mainFrame.getChoicePanel().getBtnSanPham();
@@ -226,10 +226,22 @@ public class ChangeTableController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+			
+	/*		Thread t = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					showLoader();
+					
+				}
+			});
+			t.start();*/
+	      
 				SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 				Date sau = null;
 				Date time1 = db.getMinDateBill();
 				Date time2 = db.getMaxDateBill();
+		
 				
 				funcStatisPanel.getTfFrom().setText(format.format(time1).toString());
 				funcStatisPanel.getTfTo().setText(format.format(time2).toString());
@@ -264,6 +276,7 @@ public class ChangeTableController {
 				funcPanel.add(funcStatisPanel, BorderLayout.CENTER);
 				funcPanel.revalidate();
 				funcPanel.repaint();
+				
 				
 			}
 		});
@@ -391,7 +404,7 @@ public class ChangeTableController {
 				int i=0,index;
 				SanPham sp = new SanPham();
 				while(i<100) {
-					String id = "DN"+sp.indexOfMusic;
+					String id = "DP"+sp.indexOfBook;
 					
 					index = r.nextInt(tensach.length);
 					String tenSP = tensach[index];
@@ -407,28 +420,71 @@ public class ChangeTableController {
 					String tacGia = tacgia[index];
 					List<String> list = new ArrayList<>();
 					list.add(tacGia);
-					DiaNhac sach = new DiaNhac(id, tenSP, "DN", soLuongTonKho, giaMua, giaBan, ngayNhapHangCuoi, nhaXB, list);
-					db.addMusic(sach);
-					sp.indexOfMusic++;
+					Sach sach = new Sach(id, tenSP, "SA", soLuongTonKho, giaMua, giaBan, ngayNhapHangCuoi, nhaXB, list);
+					db.addBook(sach);
+					sp.indexOfBook++;
 					i++;
+				}*/
+				
+				
+				/*String idkhach[] = {"KH1","KH14","KH15","KH230","KH231","KH232","KH233"};
+				String idnv[] = {"NV0","NV1","NV5","NV6","NV121"};
+				String idsp[] = {"SA2904","SA2905","SA2906","SA2907","SA2908","SA2909","SA2910",};
+				Timestamp date1 = new Timestamp(new Date().getTime());
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS").parse("1/12/2017 13:10:10.102"));
+					
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				*/
+				Random r = new Random();
+				int i=0;
+				SanPham sp = new SanPham();
+				
+				while(i<100) {
+					String idhoadon = "HD"+sp.indexOfBill;
+					String idkhachhang = idkhach[r.nextInt(idkhach.length)];
+					String idnhanvien = idnv[r.nextInt(idnv.length)];
+					Date date2 = cal.getTime();
+					String idsanpham = idsp[r.nextInt(idsp.length)];
+					MuaHang mh = new MuaHang(idsanpham, 1+ r.nextInt(10), db.getBook(idsanpham).getGiaBan());
+					
+					db.addWait(idhoadon, idkhachhang, idnhanvien, date1, date2, mh);
+					cal.add(Calendar.DATE,1);
+					sp.indexOfBill++;
+					i++;
+					
+				}*/
 				
 				
-				if(type.equals("quanly")) {
+				
+				/*if(type.equals("quanly")) {
 					new ManagerInfoView();
 				}
 				else {
 					
 					NhanVien nv = db.getStaff(username);
 					new EditStaffView(mainFrame,db,nv);
-				}
+				}*/
 				
 			}
 		});
 	}
+public void showLoader() {
+	   Icon icon = new ImageIcon(getClass().getResource("/loading.gif"));
+       
+       JLabel label = new JLabel(icon);
+       JFrame frameLoader = new JFrame();
+       frameLoader.setUndecorated(true);
+       frameLoader.getContentPane().add(label);
+       frameLoader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       frameLoader.pack();
+       frameLoader.setLocationRelativeTo(mainFrame.getTablePanel());
+       frameLoader.setVisible(true);
+	}
 	
 	
-	
-	
+
 }

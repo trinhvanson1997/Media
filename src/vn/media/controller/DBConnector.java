@@ -676,6 +676,21 @@ conn = getConnection();
 		return 0;
 	}
 	
+	public String getNameProduct(String id) {
+		conn  = getConnection();
+		try {
+			rs = stm.executeQuery("SELECT tensp FROM sanpham WHERE id = '"+id+"' ;");
+			if(!rs.next())
+			{	conn.close();
+				return null;}
+			conn.close();
+			return rs.getString(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 	
@@ -719,9 +734,9 @@ conn = getConnection();
 		conn = getConnection();
 		try {
 			rs = stm.executeQuery(""
-					+ "SELECT sanpham.*,nxb FROM sanpham,sach WHERE tensp = '"+name+"' and sanpham.id = sach.id and ("+convertNXBToSQL(publisher)+");");
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach WHERE lower(tensp) = '"+name+"' and sanpham.id = sach.id and ("+convertNXBToSQL(publisher)+");");
 			while(rs.next()) {
-				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String id 		= rs.getString("id"); 
 				String tensp	= rs.getString("tensp");
 				int	soluong	 	= rs.getInt("soluongtonkho");
 				long giamua 	= rs.getLong("giamua");
@@ -750,10 +765,10 @@ conn = getConnection();
 		conn = getConnection();
 		try {
 			rs = stm.executeQuery(""
-					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE tensp = '"+name+"' and sanpham.id = sach.id and "
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE lower(tensp) = '"+name+"' and sanpham.id = sach.id and "
 							+ " sach.id = sach_tacgia.id and ("+convertTacGiaToSQL(author)+");");
 			while(rs.next()) {
-				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String id 		= rs.getString("id"); 
 				String tensp	= rs.getString("tensp");
 				int	soluong	 	= rs.getInt("soluongtonkho");
 				long giamua 	= rs.getLong("giamua");
@@ -785,7 +800,7 @@ conn = getConnection();
 					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE  sanpham.id = sach.id and "
 							+ " sach.id = sach_tacgia.id and ("+convertNXBToSQL(publisher) +") and ("+convertTacGiaToSQL(author)+");");
 			while(rs.next()) {
-				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String id 		= rs.getString("id");
 				String tensp	= rs.getString("tensp");
 				int	soluong	 	= rs.getInt("soluongtonkho");
 				long giamua 	= rs.getLong("giamua");
@@ -815,9 +830,42 @@ conn = getConnection();
 		try {
 			rs = stm.executeQuery(""
 					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE  sanpham.id = sach.id and "
-							+ " sach.id = sach_tacgia.id and tensp = '"+name+"' and ("+convertNXBToSQL(publisher) +") and ("+convertTacGiaToSQL(author)+");");
+							+ " sach.id = sach_tacgia.id and lower(tensp) = '"+name+"' and ("+convertNXBToSQL(publisher) +") and ("+convertTacGiaToSQL(author)+");");
 			while(rs.next()) {
-				String id 		= rs.getString("id"); System.out.println(rs.getString("id"));
+				String id 		= rs.getString("id");
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Sach> getBookByNameOrPublisherOrAuthor(String name, String publisher, String author) {
+		List<Sach> list = new ArrayList<>();
+	
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT sanpham.*,nxb FROM sanpham,sach,sach_tacgia WHERE  sanpham.id = sach.id and "
+							+ " sach.id = sach_tacgia.id and (lower(tensp) = '"+name+"' or ("+convertNXBToSQL(publisher) +") or ("+convertTacGiaToSQL(author)+"));");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); 
 				String tensp	= rs.getString("tensp");
 				int	soluong	 	= rs.getInt("soluongtonkho");
 				long giamua 	= rs.getLong("giamua");
@@ -842,27 +890,37 @@ conn = getConnection();
 	}
 	
 	public String convertNXBToSQL(String s) {
-		String rs = "nxb = '";
-		for(int i=0;i<s.length();i++) {
-			if(s.charAt(i) == ',') {
-				rs+= "' or nxb = '";
-			}
-			else rs += s.charAt(i);
+		if(s.equals("")) {
+			return "lower(nxb) = ''";
 		}
-		rs += "'";
-		return rs;
+		else {
+			String rs = "lower(nxb) = '";
+			for(int i=0;i<s.length();i++) {
+				if(s.charAt(i) == ',') {
+					rs+= "' or lower(nxb) = '";
+				}
+				else rs += s.charAt(i);
+			}
+			rs += "'";
+			return rs;
+		}
 	}
 	
 	public String convertTacGiaToSQL(String s) {
-		String rs = "tacgia = '";
+		if(s.equals("")) {
+			return "lower(tacgia) = ''";
+		}
+		else {
+		String rs = "lower(tacgia) = '";
 		for(int i=0;i<s.length();i++) {
 			if(s.charAt(i) == ',') {
-				rs+= "' or tacgia = '";
+				rs+= "' or lower(tacgia) = '";
 			}
 			else rs += s.charAt(i);
 		}
 		rs += "'";
 		return rs;
+		}
 	}
 	
 	
@@ -919,6 +977,7 @@ conn = getConnection();
 		}
 		return false;
 	}
+	
 	
 	public void addBook(Sach sach) {
 		conn = getConnection();
@@ -1620,6 +1679,27 @@ conn = getConnection();
 				System.out.println(listMH.get(i).getIdSanPham());
 			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+listMH.get(i).getIdSanPham()+"' , "+listMH.get(i).getSoLuong()+");");
 			}
+			conn.close();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+	
+	public boolean addWait(String idhoadon, String idkhachhang, String idnhanvien, Timestamp date1,Date date2,MuaHang listMH) {
+		conn = getConnection();
+		Timestamp t = new Timestamp(date2.getTime());
+		try {
+			stm.executeUpdate("INSERT INTO hoadon VALUES ('"+idhoadon+"','"+idkhachhang+"','"+idnhanvien+"','"+date1+"','"+t+"','Hoàn tất') ;");
+		
+				
+			stm.executeUpdate("INSERT INTO chitiethoadon VALUES ('"+idhoadon+"' , '"+listMH.getIdSanPham()+"' , "+listMH.getSoLuong()+");");
+			
+			System.out.println("Add bill test");
+			conn.close();
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -2081,18 +2161,20 @@ conn = getConnection();
 		conn = getConnection();
 		
 		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
-		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 0, 0, 0, 0);
-		
+		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 23, 59, 59, 999999999);
+		System.out.println("time 1: "+ time1);
+		System.out.println("time 2: "+ time2);
 		try {
 			String query ="select sum(soluong*(sanpham.giaban)) from chitiethoadon,sanpham,hoadon " + 
 					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
-					+"and hoadon.ngaymua >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
 
 			rs=stm.executeQuery(query);
 			
 			if(rs.next()) 
 				{
-				System.out.println(rs.getLong(1));
+				System.out.println("doanh thu: "+rs.getLong(1));
+				conn.close();
 				return rs.getLong(1);}
 		}
 		catch (SQLException e) {
@@ -2104,14 +2186,14 @@ conn = getConnection();
 		conn = getConnection();
 	
 		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), one.getDate(), 0, 0, 0, 0);
-		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(two.getYear(), two.getMonth(), two.getDate(), 23, 59, 59, 999999999);
 		try {
 			long productmoney = 0,feemoney = 0;
 		
 					
 			String query ="select sum(soluong*(sanpham.giaban-sanpham.giamua)) from chitiethoadon,sanpham,hoadon " + 
 					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
-					+"and hoadon.ngaymua >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
 			rs=stm.executeQuery(query);
 			
 			if(rs.next()) productmoney= rs.getLong(1);
@@ -2120,6 +2202,8 @@ conn = getConnection();
 			query = "select sum(feevalue) from paid where status= 1 "+"and paidtime >='"+time1+"' and paidtime <='"+time2+ "'; ";
 			rs=stm.executeQuery(query);
 			if(rs.next()) feemoney= rs.getLong(1);
+			
+			conn.close();
 			return productmoney-feemoney;
 		}
 		catch (SQLException e) {
@@ -2128,10 +2212,122 @@ conn = getConnection();
 		return 0;
 	}
 	
-	public static void main(String[] args) {
-		DBConnector db = new DBConnector();
-		db.getBookByNameAndAuthor("Học máy", "Bùi Văn A");
+	public long getDoanhThuTheoThang(Date one) {
+		conn = getConnection();
+		
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), 1, 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(one.getYear(), one.getMonth(),31, 23, 59,59 ,999999999);
+		System.out.println("time 1: "+ time1);
+		System.out.println("time 2: "+ time2);
+		try {
+			String query ="select sum(soluong*(sanpham.giaban)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) 
+				{
+				System.out.println("doanh thu: "+rs.getLong(1));
+				conn.close();
+				return rs.getLong(1);}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	public long getLoiNhuanTheoThang(Date one) {
+		conn = getConnection();
+		
+		Timestamp time1 = new Timestamp(one.getYear(), one.getMonth(), 1, 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(one.getYear(), one.getMonth(),31, 23, 59,59 ,999999999);
+		try {
+			long productmoney = 0,feemoney = 0;
+		
+					
+			String query ="select sum(soluong*(sanpham.giaban-sanpham.giamua)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) productmoney= rs.getLong(1);
+			
+			
+			query = "select sum(feevalue) from paid where status= 1 "+"and paidtime >='"+time1+"' and paidtime <='"+time2+ "'; ";
+			rs=stm.executeQuery(query);
+			if(rs.next()) feemoney= rs.getLong(1);
+			
+			conn.close();
+			return productmoney-feemoney;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
+	public long getDoanhThuTheoNam(Date one) {
+		conn = getConnection();
+		
+		Timestamp time1 = new Timestamp(one.getYear(),0, 1, 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(one.getYear(),11, 31, 23, 59,59 ,999999999);
+		System.out.println("time 1: "+ time1);
+		System.out.println("time 2: "+ time2);
+		try {
+			String query ="select sum(soluong*(sanpham.giaban)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) 
+				{
+				System.out.println("doanh thu: "+rs.getLong(1));
+				conn.close();
+				return rs.getLong(1);}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	public long getLoiNhuanTheoNam(Date one) {
+		conn = getConnection();
+	
+		Timestamp time1 = new Timestamp(one.getYear(), 0, 1, 0, 0, 0, 0);
+		Timestamp time2 = new Timestamp(one.getYear(), 11, 31, 23, 59,59 ,999999999);
+		try {
+			long productmoney = 0,feemoney = 0;
+		
+					
+			String query ="select sum(soluong*(sanpham.giaban-sanpham.giamua)) from chitiethoadon,sanpham,hoadon " + 
+					"where  sanpham.id = chitiethoadon.idsanpham  and hoadon.id = chitiethoadon.idhoadon "
+					+"and hoadon.ngayxuly >='"+time1+"' and hoadon.ngayxuly <='"+time2+ "';";
+			rs=stm.executeQuery(query);
+			
+			if(rs.next()) productmoney= rs.getLong(1);
+			
+			
+			query = "select sum(feevalue) from paid where status= 1 "+"and paidtime >='"+time1+"' and paidtime <='"+time2+ "'; ";
+			rs=stm.executeQuery(query);
+			if(rs.next()) feemoney= rs.getLong(1);
+			
+			conn.close();
+			return productmoney-feemoney;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+/*ublic static void main(String[] args) {
+	DBConnector db = new DBConnector();
+
+	System.out.println(db.getNameProduct("SA2904"));
+	
+}*/
+
 	
 }

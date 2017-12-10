@@ -12,10 +12,11 @@ import vn.media.view.MainFrame;
 import vn.media.view.bill.BillDetailView;
 
 public class SeeBillDetailController {
-	private JButton btnThongTinChiTiet;
+	private JButton btnThongTinChiTiet,btnXulyDonHang;
 	
 	public SeeBillDetailController(MainFrame mainFrame,DBConnector db) {
 		btnThongTinChiTiet = mainFrame.getFuncBillPanel().getBtnThongTinChiTiet();
+		btnXulyDonHang = mainFrame.getFuncWaitPanel().getBtnThongTinChiTiet();
 		
 		btnThongTinChiTiet.addActionListener(new ActionListener() {
 			
@@ -37,6 +38,8 @@ public class SeeBillDetailController {
 				
 			}
 		});
+		
+
 	}
 	
 }

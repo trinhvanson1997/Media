@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import vn.media.common.IOFile;
 import vn.media.controller.ChangeTableController;
 import vn.media.controller.DBConnector;
+import vn.media.controller.bill.PrintBillController;
 import vn.media.controller.bill.RefreshBillController;
 import vn.media.controller.bill.SearchBillController;
 import vn.media.controller.bill.SeeBillDetailController;
@@ -258,6 +259,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new EditFeeController(mainFrame, db);
 				
 				new PaidFeeController(mainFrame, db, store);
+				new PrintBillController(mainFrame, db);
 				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override
@@ -320,7 +322,7 @@ public class LoginBox extends JFrame implements ActionListener,KeyListener{
 				new ShowAllWaitController(mainFrame, db);
 				new RefreshWaitController(mainFrame, db);
 				new HandlingWait(mainFrame, db);
-				
+				new PrintBillController(mainFrame, db);
 				
 				mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 				    @Override

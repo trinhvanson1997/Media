@@ -94,10 +94,28 @@ public class SearchBookController {
 					}
 				}
 				else if(type == 4) {
-					for(Sach sach:list) {
-						int soluong = sach.getSoLuongTonKho();
-						if(String.valueOf(soluong).startsWith(search)) {
-							tempList.add(sach);
+					if(search.startsWith(">")) {
+						for(Sach sach:list) {
+							int soluong = sach.getSoLuongTonKho();
+							if(soluong > Integer.valueOf(search.substring(1))) {
+								tempList.add(sach);
+							}
+						}
+					}
+					else if(search.startsWith("<")) {
+						for(Sach sach:list) {
+							int soluong = sach.getSoLuongTonKho();
+							if(soluong < Integer.valueOf(search.substring(1))) {
+								tempList.add(sach);
+							}
+						}
+					}
+					else {
+						for(Sach sach:list) {
+							int soluong = sach.getSoLuongTonKho();
+							if(String.valueOf(soluong).equals(search)) {
+								tempList.add(sach);
+							}
 						}
 					}
 				}
@@ -105,7 +123,7 @@ public class SearchBookController {
 					for(Sach sach:list) {
 						long giamua = sach.getGiaMua();
 					
-						if(String.valueOf(giamua).startsWith(search)) {
+						if(String.valueOf(giamua).equals(search)) {
 							tempList.add(sach);
 						}
 					}
@@ -114,7 +132,7 @@ public class SearchBookController {
 					for(Sach sach:list) {
 					
 						long giaban = sach.getGiaBan();
-						if(String.valueOf(giaban).startsWith(search)) {
+						if(String.valueOf(giaban).equals(search)) {
 							tempList.add(sach);
 						}
 					}

@@ -43,32 +43,7 @@ public class Store {
 				db.updateFee(fe);
 			}
 		}
-		Timer timer = new Timer(86400 ,new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("WE ARE IN TIMER");
-				Date time = new Date();
-				@SuppressWarnings("deprecation")
-				Timestamp now = new Timestamp(time.getYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds(), 0);
-				for(Fee fe:costList) {
-					Timestamp last = fe.getLastRequest();
-					@SuppressWarnings("deprecation")
-					int day=(now.getYear()-last.getYear())*360+(now.getMonth()-last.getMonth()*30+now.getDate()-last.getDate());
-					int count = day/fe.getFeeCycle();
-					for(int i=0;i<count;i++) {
-						String id = "PA"+sp.indexOfPaid;
-						db.addPaid(new Paid(id, fe.getFeeName(), 0, fe.getFeeValue(), now, null));
-						sp.indexOfPaid++;
-						
-						fe.setLastRequest(now);
-						db.updateFee(fe);
-					}
-				}
-				
-			}
-		});
-		timer.start();
+		
 		io.writeFile();
 	}
 	/**

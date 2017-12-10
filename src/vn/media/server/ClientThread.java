@@ -26,12 +26,14 @@ import vn.media.view.LoginBox;
 public class ClientThread extends Thread{
 	public static final int LOGIN=1,LOGIN_SUCCESS=2,LOGIN_FAIL=3,GET_ALL_BOOK=4,GET_ALL_MOVIE=5
 			,GET_ALL_MUSIC=6,GET_CUSTOMER_NAME=7,GET_COIN_CUS=8,GET_SLTK=9,UPDATE_COIN=10
-					,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
-					,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
-							,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19
-							,COUNT_BOOK=20,COUNT_MOVIE=21,COUNT_MUSIC=22,SERVER_CLOSE=23,GET_HISTORY=24
-							,SEARCH_BOOK_BY_NAME_AND_PUBLISHER = 25,SEARCH_BOOK_BY_NAME_AND_AUTHOR = 26,
-									SEARCH_BOOK_BY_PUBLISHER_AND_AUTHOR = 27,SEARCH_BOOK_BY_NAME_AND_PUBLISHER_AND_AUTHOR = 28;
+			,UPDATE_NUMBER_PRODUCT=11,UPDATE_CUSTOMER_INFO=12
+			,GET_CUSTOMER=13,CHECK_SERIAL=14,GET_VALUE_CARD=15,CHECK_EXIST_USERNAME=16
+			,ADD_CUSTOMER=17,CLOSE_REQUEST=18,ORDER_REQUEST=19
+			,COUNT_BOOK=20,COUNT_MOVIE=21,COUNT_MUSIC=22,SERVER_CLOSE=23,GET_HISTORY=24
+			,SEARCH_BOOK_BY_NAME_AND_PUBLISHER = 25,SEARCH_BOOK_BY_NAME_AND_AUTHOR = 26,
+			SEARCH_BOOK_BY_PUBLISHER_AND_AUTHOR = 27,SEARCH_BOOK_BY_NAME_AND_PUBLISHER_AND_AUTHOR = 28
+			,SEARCH_BOOK = 29;
+									
 	public Socket socket;
 	public Server server;
 	public DBConnector db;
@@ -240,6 +242,47 @@ public class ClientThread extends Thread{
 					String author = in.readUTF();
 					
 					List<Sach> list = db.getBookByNameAndPublisherAndAuthor(name, publisher,author);
+					
+					out.writeInt(list.size());
+					out.flush();
+					
+					for(int i=0;i<list.size();i++) {
+						oos.writeObject(list.get(i).getTacGia());
+						oos.flush();
+						
+						out.writeUTF(list.get(i).getId());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getTenSP());
+						out.flush();
+						
+						out.writeUTF(list.get(i).getMaLoaiSP());
+						out.flush();
+						
+						out.writeInt(list.get(i).getSoLuongTonKho());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaMua());
+						out.flush();
+						
+						out.writeLong(list.get(i).getGiaBan());
+						out.flush();
+						
+						out.writeUTF(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(list.get(i).getNgayNhapHangCuoi()));
+						out.flush();
+						
+						out.writeUTF(list.get(i).getNhaXB());
+						out.flush();
+						
+						
+					}
+				}
+				else if(stt == SEARCH_BOOK) {
+					String name = in.readUTF();
+					String publisher = in.readUTF();
+					String author = in.readUTF();
+					
+					List<Sach> list = db.getBookByNameOrPublisherOrAuthor(name, publisher,author);
 					
 					out.writeInt(list.size());
 					out.flush();
