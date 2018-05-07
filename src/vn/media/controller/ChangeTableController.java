@@ -3,10 +3,13 @@ package vn.media.controller;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -25,11 +28,15 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import vn.media.common.IOFile;
+import vn.media.models.NhanVien;
+import vn.media.models.Sach;
+import vn.media.models.SanPham;
 import vn.media.models.Store;
 import vn.media.view.ChoicePanel;
 import vn.media.view.FuncStatisPanel;
 import vn.media.view.LoginBox;
 import vn.media.view.MainFrame;
+import vn.media.view.ManagerInfoView;
 import vn.media.view.TabbedProduct;
 import vn.media.view.bill.FuncBillPanel;
 import vn.media.view.bill.TableBillPanel;
@@ -43,36 +50,36 @@ import vn.media.view.movies.FuncMoviesPanel;
 import vn.media.view.movies.TableMoviesPanel;
 import vn.media.view.music.FuncMusicPanel;
 import vn.media.view.music.TableMusicPanel;
+import vn.media.view.staff.EditStaffView;
 import vn.media.view.staff.FuncStaffPanel;
 import vn.media.view.staff.TableStaffPanel;
 import vn.media.view.wait.FuncWaitPanel;
 import vn.media.view.wait.TableWaitPanel;
 
 public class ChangeTableController {
-	
 
 	private ChoicePanel choicePanel;
-	
-	private FuncStaffPanel 	funcStaffPanel;
-	private FuncCusPanel 	funcCusPanel;
-	private FuncBookPanel 	funcBookPanel;
+
+	private FuncStaffPanel funcStaffPanel;
+	private FuncCusPanel funcCusPanel;
+	private FuncBookPanel funcBookPanel;
 	private FuncMoviesPanel funcMoviesPanel;
-	private FuncMusicPanel 	funcMusicPanel;
-	private FuncBillPanel 	funcBillPanel;
-	private FuncWaitPanel 	funcWaitPanel;
-	private FuncFeePanel 	funcFeepanel;
+	private FuncMusicPanel funcMusicPanel;
+	private FuncBillPanel funcBillPanel;
+	private FuncWaitPanel funcWaitPanel;
+	private FuncFeePanel funcFeepanel;
 	private FuncStatisPanel funcStatisPanel;
-	
-	private TableStaffPanel 	tableStaffPanel;
-	private TableCusPanel 		tableCusPanel;
-	private TabbedProduct 		tabbedProduct;
-	private TableBookPanel 		tableBookPanel;
-	private TableMoviesPanel 	tableMoviesPanel;
-	private TableMusicPanel 	tableMusicPanel;
-	private TableBillPanel 		tableBillPanel;
-	private TableWaitPanel 		tableWaitPanel;
-	private TableFeePanel		tableFeePanel;
-	
+
+	private TableStaffPanel tableStaffPanel;
+	private TableCusPanel tableCusPanel;
+	private TabbedProduct tabbedProduct;
+	private TableBookPanel tableBookPanel;
+	private TableMoviesPanel tableMoviesPanel;
+	private TableMusicPanel tableMusicPanel;
+	private TableBillPanel tableBillPanel;
+	private TableWaitPanel tableWaitPanel;
+	private TableFeePanel tableFeePanel;
+
 	private JButton btnStaff;
 	private JButton btnCus;
 	private JButton btnProduct;
@@ -82,24 +89,27 @@ public class ChangeTableController {
 	private JButton btnWait;
 	private JButton btnFee;
 	private JButton btnStatis;
-	
+
 	private IOFile ioFile = new IOFile();
 	private String type;
 	private String username;
 	private MainFrame mainFrame;
-	
-	public String tensach[] = {"Tiếng Việt","Xác suất thống kê","Tiếng anh chuyên ngành","Giáo dục công dân","Công nghệ",
-			"Tin học đại cương","Giải tích 1","Giải tích 2","Giải tích 3","Hóa học","Pháp luật đại cương","Chính trị học","Đường lối cách mạng của ĐCSVN"
-			,"Tư tưởng Hồ Chí Minh","Cơ sở dữ liệu","Toán cao cấp","AI","An toàn và bảo mật thông tin","Phân tích thiết kế hệ thống","Cuộc cách mạng một cọng rơm","Chí phèo"
-			,"CSDL nâng cao","Học máy","Nhập môn công nghệ phần mềm","Vật lý đại cương 1","Tiếng anh chuyên ngành"};
-	
-	public String nxb[] = {"Thống kê","Lao động xã hội","Chính trị Quốc Gia","Thế Giới","Quân đội nhân dân","Y học","Văn hóa thông tin",
-			"Thông tấn","Khoa học và kỹ thuật","Y học và sức khỏe","Kim đồng","Bách khoa","Tuổi trẻ","Kinh tế"};
-	
-	public String tacgia[] = {"Jack ma","Hoàng Thúy Long","Nguyễn Trung Chính","Đặng Đức Trạch","Phạm Văn Ngữ","Nguyễn Đình Hường","Phạm Mạnh Hùng","Vũ Quang Bích","Đỗ Nguyên Phương","Nam Cao",
-			"Phùng Đắc Cam","Nguyễn Kim Giao","Tạ Văn Bĩnh","Lê Đăng Hà","Nguyễn Hữu Tâm","Lê Triết","Vũ Bình Minh","Bùi Văn A"};
-	
-	
+
+	public String tensach[] = { "Tiếng Việt", "Xác suất thống kê", "Tiếng anh chuyên ngành", "Giáo dục công dân",
+			"Công nghệ", "Tin học đại cương", "Giải tích 1", "Giải tích 2", "Giải tích 3", "Hóa học",
+			"Pháp luật đại cương", "Chính trị học", "Đường lối cách mạng của ĐCSVN", "Tư tưởng Hồ Chí Minh",
+			"Cơ sở dữ liệu", "Toán cao cấp", "AI", "An toàn và bảo mật thông tin", "Phân tích thiết kế hệ thống",
+			"Cuộc cách mạng một cọng rơm", "Chí phèo", "CSDL nâng cao", "Học máy", "Nhập môn công nghệ phần mềm",
+			"Vật lý đại cương 1", "Tiếng anh chuyên ngành" };
+
+	public String nxb[] = { "Thống kê", "Lao động xã hội", "Chính trị Quốc Gia", "Thế Giới", "Quân đội nhân dân",
+			"Y học", "Văn hóa thông tin", "Thông tấn", "Khoa học và kỹ thuật", "Y học và sức khỏe", "Kim đồng",
+			"Bách khoa", "Tuổi trẻ", "Kinh tế" };
+
+	public String tacgia[] = { "Jack ma", "Hoàng Thúy Long", "Nguyễn Trung Chính", "Đặng Đức Trạch", "Phạm Văn Ngữ",
+			"Nguyễn Đình Hường", "Phạm Mạnh Hùng", "Vũ Quang Bích", "Đỗ Nguyên Phương", "Nam Cao", "Phùng Đắc Cam",
+			"Nguyễn Kim Giao", "Tạ Văn Bĩnh", "Lê Đăng Hà", "Nguyễn Hữu Tâm", "Lê Triết", "Vũ Bình Minh", "Bùi Văn A" };
+
 	public ChangeTableController(MainFrame mainFrame,DBConnector db,Store store) {
 		this.mainFrame  = mainFrame;
 		
@@ -227,58 +237,58 @@ public class ChangeTableController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-	/*		Thread t = new Thread(new Runnable() {
+
+	      
+				if(type.equals("quanly")) {
+					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+					Date sau = null;
+					Date time1 = db.getMinDateBill();
+					Date time2 = db.getMaxDateBill();
+					SimpleDateFormat formatMY = new SimpleDateFormat("MM/yyyy");
+					
+					funcStatisPanel.getTfFrom().setText(format.format(time1).toString());
+					funcStatisPanel.getTfTo().setText(format.format(time2).toString());
+					
+					Calendar calendar = Calendar.getInstance();
+					
+					calendar.setTime(time1);
+
+					JFreeChart lineChart = null;
+					DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+					while (time1.compareTo(time2) <= 0) {
+					
+						calendar.setTime(time1);
+						calendar.add(Calendar.MONTH, 1);
+						 lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh) theo tháng".toUpperCase(), "THÁNG",
+								"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
+						 sau = calendar.getTime();
+							dataset.addValue(db.getDoanhThuTheoThang(time1), "Doanh thu", formatMY.format(time1));
+							dataset.addValue(db.getLoiNhuanTheoThang(time1), "Lợi nhuận", formatMY.format(time1));
+						time1 = sau;
+					}
+					 lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh)".toUpperCase(), "THÁNG",
+							"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
 				
-				@Override
-				public void run() {
-					showLoader();
+					ChartPanel panelChart = new ChartPanel(lineChart);
+					
+					tablePanel.remove(tablePanel.getComponent(0));
+					tablePanel.add(panelChart, BorderLayout.CENTER);
+					tablePanel.revalidate();
+					tablePanel.repaint();
+					
+					funcPanel.remove(funcPanel.getComponent(0));
+					funcPanel.add(funcStatisPanel, BorderLayout.CENTER);
+					funcPanel.revalidate();
+					funcPanel.repaint();
+					
 					
 				}
-			});
-			t.start();*/
-	      
-				SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-				Date sau = null;
-				Date time1 = db.getMinDateBill();
-				Date time2 = db.getMaxDateBill();
-		
 				
-				funcStatisPanel.getTfFrom().setText(format.format(time1).toString());
-				funcStatisPanel.getTfTo().setText(format.format(time2).toString());
-				
-				Calendar calendar = Calendar.getInstance();
-				
-				calendar.setTime(time1);
-
-			
-				DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-				while (time1.compareTo(time2) <= 0) {
-				
-					calendar.setTime(time1);
-					calendar.add(Calendar.DATE, 1);
-					sau = calendar.getTime();
-					dataset.addValue(db.getDoanhThu(time1, sau), "Doanh thu", format.format(time1));
-					dataset.addValue(db.getLoiNhuan(time1, sau), "Lợi nhuận", format.format(time1));
-
-					time1 = sau;
+				else {
+					JOptionPane.showMessageDialog(null, "Bạn không có quyền truy cập mục này", "Thông báo", JOptionPane.WARNING_MESSAGE);
 				}
-				JFreeChart lineChart = ChartFactory.createLineChart("Thống kê doanh thu (đỏ) và lợi nhuận (xanh)".toUpperCase(), "Ngày",
-						"Số Tiền (đ)", dataset, PlotOrientation.VERTICAL, false, false, false);
-			
-				ChartPanel panelChart = new ChartPanel(lineChart);
 				
-				tablePanel.remove(tablePanel.getComponent(0));
-				tablePanel.add(panelChart, BorderLayout.CENTER);
-				tablePanel.revalidate();
-				tablePanel.repaint();
-				
-				funcPanel.remove(funcPanel.getComponent(0));
-				funcPanel.add(funcStatisPanel, BorderLayout.CENTER);
-				funcPanel.revalidate();
-				funcPanel.repaint();
-				
-				
-			}
+			}		
 		});
 		btnProduct.addActionListener(new ActionListener() {
 			
@@ -400,11 +410,13 @@ public class ChangeTableController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				
 			/*	Random r = new Random();
 				int i=0,index;
 				SanPham sp = new SanPham();
-				while(i<100) {
-					String id = "DP"+sp.indexOfBook;
+				while(i<30000) {
+					String id = "SA"+sp.indexOfBook;
 					
 					index = r.nextInt(tensach.length);
 					String tenSP = tensach[index];
@@ -424,9 +436,8 @@ public class ChangeTableController {
 					db.addBook(sach);
 					sp.indexOfBook++;
 					i++;
-				}*/
-				
-				
+				}
+				*/
 				/*String idkhach[] = {"KH1","KH14","KH15","KH230","KH231","KH232","KH233"};
 				String idnv[] = {"NV0","NV1","NV5","NV6","NV121"};
 				String idsp[] = {"SA2904","SA2905","SA2906","SA2907","SA2908","SA2909","SA2910",};
@@ -460,31 +471,30 @@ public class ChangeTableController {
 				
 				
 				
-				/*if(type.equals("quanly")) {
+				if(type.equals("quanly")) {
 					new ManagerInfoView();
 				}
 				else {
 					
 					NhanVien nv = db.getStaff(username);
 					new EditStaffView(mainFrame,db,nv);
-				}*/
+				}
 				
 			}
 		});
 	}
-public void showLoader() {
-	   Icon icon = new ImageIcon(getClass().getResource("/loading.gif"));
-       
-       JLabel label = new JLabel(icon);
-       JFrame frameLoader = new JFrame();
-       frameLoader.setUndecorated(true);
-       frameLoader.getContentPane().add(label);
-       frameLoader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       frameLoader.pack();
-       frameLoader.setLocationRelativeTo(mainFrame.getTablePanel());
-       frameLoader.setVisible(true);
+
+	public void showLoader() {
+		Icon icon = new ImageIcon(getClass().getResource("/loading.gif"));
+
+		JLabel label = new JLabel(icon);
+		JFrame frameLoader = new JFrame();
+		frameLoader.setUndecorated(true);
+		frameLoader.getContentPane().add(label);
+		frameLoader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameLoader.pack();
+		frameLoader.setLocationRelativeTo(mainFrame.getTablePanel());
+		frameLoader.setVisible(true);
 	}
-	
-	
 
 }

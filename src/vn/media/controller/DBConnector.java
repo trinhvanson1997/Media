@@ -195,7 +195,7 @@ public class DBConnector {
 			
 
 			rs = stm.executeQuery(
-					"SELECT nhanvien.*,pass FROM nhanvien,account WHERE nhanvien.username=account.username LIMIT 20 OFFSET "+page*20+";");
+					"SELECT nhanvien.*,pass FROM nhanvien,account WHERE nhanvien.username=account.username and nhanvien.trangthai =1 LIMIT 20 OFFSET "+page*20+";");
 			while (rs.next()) {
 
 				String id = rs.getString("id");
@@ -230,7 +230,7 @@ public class DBConnector {
 			int kq2 = stm
 					.executeUpdate("INSERT INTO account VALUES ('" + username + "','" + password + "','nhanvien')");
 			int kq = stm.executeUpdate("INSERT INTO nhanvien VALUES ('" + id + "','" + hoTen + "','" + date + "','"
-					+ diaChi + "','" + sDT + "','" + luong + "','" + username + "')");
+					+ diaChi + "','" + sDT + "','" + luong + "','" + username + "', 1)");
 
 			if (kq > 0 && kq2 > 0) {
 				System.out.println("Insert staff to table nhanvien and table account");
@@ -251,23 +251,9 @@ public class DBConnector {
 		conn = getConnection();
 
 		try {
-			String username = "";
-			rs=stm.executeQuery("SELECT username FROM nhanvien WHERE id = '" + id + "';");
 		
-			if(rs.next()){
-				username = rs.getString("username");
-			}
-			System.out.println(username);
+			int result = stm.executeUpdate("update nhanvien set trangthai = 0 WHERE id='" + id + "';");
 			
-			//First,delete from table which contains foreign key
-			int result = stm.executeUpdate("DELETE FROM nhanvien WHERE id='" + id + "';");
-			
-			//Then, delete from table which contains primary key
-			int result1 = stm.executeUpdate("DELETE FROM account WHERE username = '" + username + "';");
-			
-			if (result > 0 && result1 > 0) {
-				System.out.println("Delete staff");
-			}
 			conn.close();
 		} catch (SQLException e) {
 			System.out.println("Connection failed!");
@@ -728,13 +714,43 @@ conn = getConnection();
 		return null;
 	}
 	
-
 	public List<Sach> getBookByNameAndPublisher(String name,String publisher){
 		List<Sach> list = new ArrayList<>();
 		conn = getConnection();
 		try {
 			rs = stm.executeQuery(""
 					+ "SELECT sanpham.*,nxb FROM sanpham,sach WHERE lower(tensp) = '"+name+"' and sanpham.id = sach.id and ("+convertNXBToSQL(publisher)+");");
+			while(rs.next()) {
+				String id 		= rs.getString("id"); 
+				String tensp	= rs.getString("tensp");
+				int	soluong	 	= rs.getInt("soluongtonkho");
+				long giamua 	= rs.getLong("giamua");
+				long giaban 	= rs.getLong("giaban");
+				Timestamp ngaynhaphang = rs.getTimestamp("ngaynhaphang");
+				String nxb		= rs.getString("nxb");
+				
+				List<String> tacgia = getTacGia(id);
+				
+				Sach sach = new Sach(id, tensp, "SA", soluong, giamua, giaban, ngaynhaphang, nxb, tacgia);
+				list.add(sach);
+			
+			}
+			conn.close();
+			System.out.println("Advanced Search Book !");
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Sach> getBookByNameAndPublisherOp(String name,String publisher){
+		List<Sach> list = new ArrayList<>();
+		conn = getConnection();
+		try {
+			rs = stm.executeQuery(""
+					+ "SELECT * FROM sanpham WHERE lower(tensp) = '"+name+"' and id IN (SELECT id FROM sach WHERE "+convertNXBToSQL(publisher)+");");
 			while(rs.next()) {
 				String id 		= rs.getString("id"); 
 				String tensp	= rs.getString("tensp");
@@ -1001,7 +1017,7 @@ conn = getConnection();
 			}
 			
 			if(result1>0 &&result2>0) {
-				System.out.println("Add book");
+				System.out.println("Add book ");
 			}
 			conn.close();
 		} catch (SQLException e) {

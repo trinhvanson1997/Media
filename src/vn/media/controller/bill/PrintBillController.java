@@ -30,7 +30,7 @@ public class PrintBillController {
 
 					HoaDon hoadon = db.getBill(id);
 					new ExportToPDF(hoadon,db);
-					JOptionPane.showMessageDialog(null, "Đã in hóa đơn mã "+ hoadon.getId() );
+					JOptionPane.showMessageDialog(null, "In hóa đơn hoàn tất!\n"+ "Xem tại D:/Bill"+hoadon.getId() );
 				} else {
 
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn sách cần sửa !", "Thông báo",

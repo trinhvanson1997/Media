@@ -39,7 +39,7 @@ public class TopInfoPanel extends JPanel{
 		
 		add(lbUser,BorderLayout.WEST);
 		
-		add(new JLabel("Type:  "+strType),BorderLayout.CENTER);
+		add(new JLabel("Chức vụ:  "+strType),BorderLayout.CENTER);
 		
 		//add(new JLabel("Type:  Quan ly"),BorderLayout.CENTER);
 	}

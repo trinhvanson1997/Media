@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="postgresql-42.1.4.jre7.jar"/>
 	<classpathentry kind="lib" path="D:/EclispeOxygen/Media/jcommon-1.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/EclispeOxygen/Media/jfreechart-1.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sontrinh/Downloads/itextpdf-5.4.0.jar"/>
+	<classpathentry kind="lib" path="itextpdf-5.4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
